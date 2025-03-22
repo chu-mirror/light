@@ -1,6 +1,6 @@
-CFLAGS = -Iinclude
+CFLAGS = -g -Iinclude
 
-SOURCES = src/hash.c
+SOURCES = src/hash.c src/list.c
 OBJECTS = $(SOURCES:.c=.o)
 
 all: test
