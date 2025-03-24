@@ -30,17 +30,25 @@ int main() {
     } while (0);
 
     do {
-	int arr[3] = {1, 2, 3};
-	List l1 = empty_list;
-	l1 = cons(&arr[2], l1);
-	l1 = cons(&arr[1], l1);
-	l1 = cons(&arr[0], l1);
+	int arr[6] = {1, 2, 3, 4, 5, 6};
+        List l1 = empty_list, l2 = empty_list, l3;
+
+	do {
+	    l1 = LIST(arr, 3);
+	    assert(length(l1) == 3);
+
+	    l2 = LIST(arr+3, 3);
+	    assert(length(l2) == 3);
+
+	    l3 = append(&l1, &l2);
+	    assert(length(l3) == 6);
+	} while (0);
 
 	do {
 	    int i, *np;
 
 	    i = 1;
-            FOREACH(np, l1) {
+            FOREACH(np, l3) {
 		assert(*np == i);
 		++i;
 	    }
@@ -49,16 +57,16 @@ int main() {
 	do {
 	    int i, *np;
 
-	    map(inc, l1);
+	    map(inc, l3);
 
 	    i = 1;
-            FOREACH(np, l1) {
+            FOREACH(np, l3) {
 		assert(*np == i+1);
 		++i;
 	    }
 	} while (0);
 
-	free_list(&l1);
+	free_list(&l3);
     } while (0);
 
     printf("Passed all tests\n");

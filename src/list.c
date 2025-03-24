@@ -24,6 +24,15 @@ List cdr(List l) {
     return l->rest;
 }
 
+List list_from_arr(void *arr, size_t len, size_t size) {
+    int i;
+    List l = empty_list;
+    for (i = 0; i < len; ++i) {
+	l = cons(arr + (len-i-1)*size, l);
+    }
+    return l;
+}
+
 size_t length(List l) {
     size_t len;
 
@@ -43,7 +52,7 @@ void map(void f(void *), List l) {
 List append(List *l1_r, List *l2_r) {
     List l;
 
-    if (!is_empty_list(*l1_r)) {
+    if (is_empty_list(*l1_r)) {
 	l = *l2_r;
 	*l2_r = empty_list;
 	return l;
