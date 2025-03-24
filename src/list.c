@@ -28,7 +28,7 @@ List list_from_arr(void *arr, size_t len, size_t size) {
     int i;
     List l = empty_list;
     for (i = 0; i < len; ++i) {
-	l = cons(arr + (len-i-1)*size, l);
+	push(arr + (len-i-1)*size, &l);
     }
     return l;
 }
@@ -41,6 +41,16 @@ size_t length(List l) {
     }
 
     return len;
+}
+
+List find_first(int jdg(void *), List l) {
+    while (!is_empty_list(l)) {
+	if (jdg(car(l))) {
+	    return l;
+	}
+	l = cdr(l);
+    }
+    return empty_list;
 }
 
 void map(void f(void *), List l) {
@@ -86,4 +96,53 @@ void free_list(List *l_r) {
     *l_r = empty_list;
 }
 
+List push(void *elm, List *l_r) {
+    return *l_r = cons(elm, *l_r);
+}
 
+void *pop(List *l_r) {
+    List _l = cdr(*l_r);
+    void *v = car(*l_r);
+    (*l_r)->rest = empty_list;
+    FREE(*l_r);
+    *l_r = _l;
+    return v;
+}
+
+void remove_all(int jdg(void *), List *l_r) {
+    List tail, next;
+
+    tail = empty_list;
+    next = *l_r;
+    while (!is_empty_list(next)) {
+	if (jdg(car(next))) {
+	    pop(&next);
+	    if (is_empty_list(tail)) {
+		*l_r = next;
+            } else {
+		tail->rest = next;
+	    }
+        } else {
+	    tail = next;
+	    next = cdr(next);
+	}
+    }
+}
+
+void *remove_first(int jdg(void *), List *l_r) {
+    List l;
+    l = find_first(jdg, *l_r);
+    if (is_empty_list(l)) {
+	return NULL;
+    }
+    if (l == *l_r) {
+	return pop(l_r);
+    }
+    do {
+	List _l = *l_r;
+        while (cdr(_l) != l)
+	    ;
+	_l->rest = l->rest;
+        return pop(&l);
+    } while (0);
+}
