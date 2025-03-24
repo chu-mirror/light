@@ -19,4 +19,6 @@ void free_list(List *l_r);
 #define empty_list NULL
 #define is_empty_list(l) ((l) == NULL)
 
+#define FOREACH(e, l) for (List __l = (l); !is_empty_list(__l) && (((e) = (typeof(e)) car(__l)) != NULL); __l = cdr(__l))
+
 #endif
