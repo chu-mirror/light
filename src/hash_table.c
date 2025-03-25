@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include "memory.h"
+#include "memgr.h"
 #include "list.h"
 #include "table_common.h"
 #include "hash_table.h"

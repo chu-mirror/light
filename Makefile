@@ -8,7 +8,7 @@ src/hash_table.c
 
 HEADERS = \
 include/hash.h \
-include/memory.h \
+include/memgr.h \
 include/list.h \
 include/hash_table.h
 

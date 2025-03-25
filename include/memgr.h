@@ -1,5 +1,5 @@
-#ifndef LIGHT_MEMORY_H
-#define LIGHT_MEMORY_H
+#ifndef LIGHT_MEMGR_H
+#define LIGHT_MEMGR_H
 
 #include <stdlib.h>
 #include <assert.h>

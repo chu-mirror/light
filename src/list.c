@@ -1,5 +1,5 @@
 #include "list.h"
-#include "memory.h"
+#include "memgr.h"
 
 struct list {
     struct list *rest;
