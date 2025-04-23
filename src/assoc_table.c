@@ -10,6 +10,18 @@ struct assoc_table {
     int (*equal_func)(const void *, const void *);
 };
 
+struct record_key_equal_to_the_key_FRAME {
+    AssocTable tbl;
+    const void *key;
+};
+
+static int record_key_equal_to_the_key_FUNC(void *rcd) {
+    struct record_key_equal_to_the_key_FRAME *fr;
+    INIT_CLOSURE_FRAME(fr);
+
+    return CLOSURE(fr->tbl->equal_func)(fr->key, ((TableRecord *)rcd)->k);
+}
+
 AssocTable new_assoc_table(int eq(const void *, const void *))
 {
     AssocTable tbl;
@@ -32,18 +44,6 @@ void free_assoc_table(AssocTable *tbl_r)
 
     free_list(&(*tbl_r)->records);
     FREE(*tbl_r);
-}
-
-struct record_key_equal_to_the_key_FRAME {
-    AssocTable tbl;
-    const void *key;
-};
-
-static int record_key_equal_to_the_key_FUNC(void *rcd) {
-    struct record_key_equal_to_the_key_FRAME *fr;
-    INIT_CLOSURE_FRAME(fr);
-
-    return CLOSURE(fr->tbl->equal_func)(fr->key, ((TableRecord *)rcd)->k);
 }
 
 void put_to_assoc_table(AssocTable tbl, const void *key, void *v)
