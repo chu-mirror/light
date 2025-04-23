@@ -6,6 +6,22 @@
 #include "list.h"
 #include "hash_table.h"
 
+struct inc1_frame {
+    int n;
+};
+
+void inc1(void) {
+    struct inc1_frame *fr;
+
+    INIT_CLOSURE_FRAME(fr);
+    ++fr->n;
+}
+
+void do_inc1(void *cl(void))
+{
+    CLOSURE(cl)();
+}
+
 void inc(void *n) {
     (*(int *)n)++;
 }
@@ -38,6 +54,25 @@ int main() {
     do {
 	char str[] = "HASHED STRING";
 	assert(hash_str(str) == 0xCD0CDDA4);
+    } while (0);
+
+    do {
+	struct inc1_frame *fr;
+	Closure cl;
+	NEW0(fr);
+	assert(fr->n == 0);
+
+	NEW(cl);
+	init_closure(cl, inc1, fr);
+
+	do_inc1((void *)cl);
+	assert(fr->n == 1);
+
+	do_inc1((void *)cl);
+	assert(fr->n == 2);
+
+	FREE(fr);
+	FREE(cl);
     } while (0);
 
     do {

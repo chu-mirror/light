@@ -2,13 +2,17 @@ CFLAGS = -g -Iinclude
 
 SOURCES = \
 src/hash.c \
-src/memory.c \
+src/closure.c \
+src/memgr.c \
 src/list.c \
 src/hash_table.c
 
 HEADERS = \
+include/light.h \
+include/idiom.h \
 include/hash.h \
 include/memgr.h \
+include/closure.h \
 include/list.h \
 include/hash_table.h
 

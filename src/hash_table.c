@@ -1,6 +1,6 @@
 #include <assert.h>
 
-#include "memgr.h"
+#include "light.h"
 #include "list.h"
 #include "table_common.h"
 #include "hash_table.h"
@@ -16,13 +16,9 @@ struct hash_table
 
 static inline List *record_list(HashTable tbl, const void *key) {
     uint32_t hv;
-    hv = tbl->hash_func(key);
+    hv = CLOSURE(tbl->hash_func)(key);
     return &tbl->table[hv % tbl->size];
 }
-
-static HashTable table_CL;
-static const void *key_CL;
-static List *records_reference_CL;
 
 HashTable new_hash_table(size_t n, uint32_t hf(const void *),
                      int eq(const void *, const void *)) {
@@ -65,7 +61,7 @@ void put_to_hash_table(HashTable tbl, const void *key, void *v) {
     do { /* search the already stored keys */
 	TableRecord *rcd_r;
 	FOREACH(rcd_r, *rcds_r) {
-	    if (tbl->equal_func(key, rcd_r->k)) {
+	    if (CLOSURE(tbl->equal_func)(key, rcd_r->k)) {
 		rcd_r->v = v; 
 		return;
 	    }
@@ -96,7 +92,7 @@ void *get_from_hash_table(HashTable tbl, const void *key) {
     do {
 	TableRecord *rcd_r;
 	FOREACH(rcd_r, *rcds_r) {
-	    if (tbl->equal_func(key, rcd_r->k)) {
+	    if (CLOSURE(tbl->equal_func)(key, rcd_r->k)) {
 		return rcd_r->v;
 	    }
         }
@@ -104,12 +100,28 @@ void *get_from_hash_table(HashTable tbl, const void *key) {
     return NULL;
 }
 
-static int record_key_equal_to_the_key_CL(void *rcd) {
-    return table_CL->equal_func(key_CL, ((TableRecord *)rcd)->k);
+struct record_key_equal_to_the_key_FRAME {
+    HashTable table;
+    const void *key;
+};
+
+int record_key_equal_to_the_key_FUNC(void *rcd) {
+    struct record_key_equal_to_the_key_FRAME *fr;
+    INIT_CLOSURE_FRAME(fr);
+
+    return CLOSURE(fr->table->equal_func)(fr->key, ((TableRecord *)rcd)->k);
 }
 
-static int equal_to_the_records_reference_CL(void *rcds_r) {
-    return rcds_r == records_reference_CL;
+
+struct equal_to_the_records_reference_FRAME {
+    List *records_reference;
+};
+
+static int equal_to_the_records_reference_FUNC(void *rcds_r) {
+    struct equal_to_the_records_reference_FRAME *fr;
+    INIT_CLOSURE_FRAME(fr);
+
+    return rcds_r == fr->records_reference;
 }
 
 void remove_from_hash_table(HashTable tbl, const void *key) {
@@ -119,16 +131,27 @@ void remove_from_hash_table(HashTable tbl, const void *key) {
 
     do {
 	TableRecord *rcd_r;
+	Closure cl;
+	struct record_key_equal_to_the_key_FRAME fr = {tbl, key};
 
-	table_CL = tbl;
-	key_CL = key;
-	rcd_r = (TableRecord *) remove_first(record_key_equal_to_the_key_CL, rcds_r);
+	NEW(cl);
+	init_closure(cl, record_key_equal_to_the_key_FUNC, &fr);
+
+	rcd_r = (TableRecord *) remove_first((void *)cl, rcds_r);
 
 	FREE(rcd_r);
+	FREE(cl);
     } while (0);
 
     if (is_empty_list(*rcds_r)) {
-	records_reference_CL = rcds_r;
-	remove_first(equal_to_the_records_reference_CL, &tbl->slots);
+	Closure cl;
+	struct equal_to_the_records_reference_FRAME fr = {rcds_r};
+
+	NEW(cl);
+	init_closure(cl, equal_to_the_records_reference_FUNC, &fr);
+
+	remove_first((void *)cl, &tbl->slots);
+
+	FREE(cl);
     }
 }

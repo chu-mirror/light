@@ -1,5 +1,5 @@
+#include "light.h"
 #include "list.h"
-#include "memgr.h"
 
 struct list {
     struct list *rest;
@@ -45,7 +45,7 @@ size_t length(List l) {
 
 List find_first(int jdg(void *), List l) {
     while (!is_empty_list(l)) {
-	if (jdg(car(l))) {
+	if (CLOSURE(jdg)(car(l))) {
 	    return l;
 	}
 	l = cdr(l);
@@ -115,7 +115,7 @@ void remove_all(int jdg(void *), List *l_r) {
     tail = empty_list;
     next = *l_r;
     while (!is_empty_list(next)) {
-	if (jdg(car(next))) {
+	if (CLOSURE(jdg)(car(next))) {
 	    pop(&next);
 	    if (is_empty_list(tail)) {
 		*l_r = next;
