@@ -55,7 +55,7 @@ List find_first(int jdg(void *), List l) {
 
 void map(void f(void *), List l) {
     for (; !is_empty_list(l); l = cdr(l)) {
-	f(car(l));
+	CLOSURE(f)(car(l));
     }
 }
 

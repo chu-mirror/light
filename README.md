@@ -4,6 +4,7 @@ Current support:
 
 - memory management;
 - hash function;
+- closure;
 - list;
 - hash table.
 
