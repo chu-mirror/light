@@ -25,6 +25,7 @@ static inline void init_closure(Closure cl, void *func, void *frame)
 #define CLOSURE(cl) (*(typeof(cl))(		     \
     ((Closure)(cl))->magic == CLOSURE_MAGIC_NUMBER ? \
 	(_light_closure_frame = ((Closure)(cl))->frame, ((Closure)(cl))->func) : cl))
+#define NEW_CLOSURE(cl, func, fr) (NEW(cl), init_closure(cl, (func), (fr)))
 #define INIT_CLOSURE_FRAME(fr) RENAME(_light_closure_frame, fr)
 
 #endif

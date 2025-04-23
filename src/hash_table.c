@@ -105,7 +105,7 @@ struct record_key_equal_to_the_key_FRAME {
     const void *key;
 };
 
-int record_key_equal_to_the_key_FUNC(void *rcd) {
+static int record_key_equal_to_the_key_FUNC(void *rcd) {
     struct record_key_equal_to_the_key_FRAME *fr;
     INIT_CLOSURE_FRAME(fr);
 
@@ -134,24 +134,19 @@ void remove_from_hash_table(HashTable tbl, const void *key) {
 	Closure cl;
 	struct record_key_equal_to_the_key_FRAME fr = {tbl, key};
 
-	NEW(cl);
-	init_closure(cl, record_key_equal_to_the_key_FUNC, &fr);
-
+	NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
 	rcd_r = (TableRecord *) remove_first((void *)cl, rcds_r);
+	FREE(cl);
 
 	FREE(rcd_r);
-	FREE(cl);
     } while (0);
 
     if (is_empty_list(*rcds_r)) {
 	Closure cl;
 	struct equal_to_the_records_reference_FRAME fr = {rcds_r};
 
-	NEW(cl);
-	init_closure(cl, equal_to_the_records_reference_FUNC, &fr);
-
+	NEW_CLOSURE(cl, equal_to_the_records_reference_FUNC, &fr);
 	remove_first((void *)cl, &tbl->slots);
-
 	FREE(cl);
     }
 }
