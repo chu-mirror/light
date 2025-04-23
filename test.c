@@ -5,6 +5,7 @@
 #include "light.h"
 #include "list.h"
 #include "hash_table.h"
+#include "assoc_table.h"
 
 struct inc1_frame {
     int n;
@@ -178,6 +179,32 @@ int main() {
 	assert(get_from_hash_table(tbl, "Chu") == NULL);
 	assert(alloc_count == 5);
 	free_hash_table(&tbl);
+    } while (0);
+
+    assert(alloc_count == 0);
+
+    do {
+	AssocTable tbl;
+	tbl = new_assoc_table(equal_func_str);
+	assert(alloc_count == 1);
+
+	put_to_assoc_table(tbl, "Chu", "Hello");
+	assert(alloc_count == 3);
+
+	put_to_assoc_table(tbl, "Mzz", "Welcome");
+	assert(alloc_count == 5);
+
+	assert(strcmp((char *)get_from_assoc_table(tbl, "Chu"), "Hello") == 0);
+	assert(strcmp((char *)get_from_assoc_table(tbl, "Mzz"), "Welcome") == 0);
+
+	put_to_assoc_table(tbl, "Chu", "Welcome");
+	assert(strcmp((char *)get_from_assoc_table(tbl, "Chu"), "Welcome") == 0);
+	assert(alloc_count == 5);
+
+	remove_from_assoc_table(tbl, "Chu");
+	assert(get_from_assoc_table(tbl, "Chu") == NULL);
+	assert(alloc_count == 3);
+	free_assoc_table(&tbl);
     } while (0);
 
     assert(alloc_count == 0);
