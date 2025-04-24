@@ -87,7 +87,6 @@ void put_to_hash_table(HashTable tbl, const void *key, void *v) {
 
 	NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
 	res = find_first((void *) cl, *rcds_r);
-	FREE(cl);
 
 	if (!is_empty_list(res)) {
 	    ((TableRecord *)car(res))->v = v;
@@ -123,7 +122,6 @@ void *get_from_hash_table(HashTable tbl, const void *key) {
 
 	NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
 	res = find_first((void *) cl, *rcds_r);
-	FREE(cl);
 
 	if (!is_empty_list(res)) {
 	    return ((TableRecord *)car(res))->v;
@@ -144,7 +142,6 @@ void remove_from_hash_table(HashTable tbl, const void *key) {
 
 	NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
 	rcd_r = (TableRecord *) remove_first((void *)cl, rcds_r);
-	FREE(cl);
 
 	FREE(rcd_r);
     } while (0);
@@ -155,6 +152,5 @@ void remove_from_hash_table(HashTable tbl, const void *key) {
 
 	NEW_CLOSURE(cl, equal_to_the_records_reference_FUNC, &fr);
 	remove_first((void *)cl, &tbl->slots);
-	FREE(cl);
     }
 }

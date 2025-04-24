@@ -63,8 +63,7 @@ int main() {
 	NEW0(fr);
 	assert(fr->n == 0);
 
-	NEW(cl);
-	init_closure(cl, inc1, fr);
+	NEW_CLOSURE(cl, inc1, fr);
 
 	do_inc1((void *)cl);
 	assert(fr->n == 1);
@@ -73,7 +72,6 @@ int main() {
 	assert(fr->n == 2);
 
 	FREE(fr);
-	FREE(cl);
     } while (0);
 
     do {

@@ -55,7 +55,6 @@ void put_to_assoc_table(AssocTable tbl, const void *key, void *v)
 	
 	NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
 	res = find_first((void *)cl, tbl->records);
-	FREE(cl);
 
 	if (!is_empty_list(res)) {
 	    ((TableRecord *)car(res))->v = v;
@@ -80,7 +79,6 @@ void *get_from_assoc_table(AssocTable tbl, const void *key)
 
     NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
     res = find_first((void *)cl, tbl->records);
-    FREE(cl);
 
     if (!is_empty_list(res)) {
 	return ((TableRecord *)car(res))->v;
@@ -97,5 +95,4 @@ void remove_from_assoc_table(AssocTable tbl, const void *key)
     NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
     RENAME(remove_first((void *)cl, &tbl->records), rcd_r);
     FREE(rcd_r);
-    FREE(cl);
 }
