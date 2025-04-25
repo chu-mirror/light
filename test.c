@@ -49,7 +49,6 @@ int main() {
 	FREE(hello);
 	assert(hello == NULL);
     } while (0);
-
     assert(alloc_count == 0);
 
     do {
@@ -57,7 +56,7 @@ int main() {
 	assert(hash_str(str) == 0xCD0CDDA4);
     } while (0);
 
-    do {
+    do { /* basic usage of closure */
 	struct inc1_frame *fr;
 	Closure cl;
 	NEW0(fr);
@@ -75,6 +74,37 @@ int main() {
 	FREE(fr);
     } while (0);
     assert(closure_count == 0);
+    assert(alloc_count == 0);
+
+    do { /* allocation of closures */
+	int i;
+	struct inc1_frame *fr;
+	Closure cls[100];
+
+	NEW0(fr);
+	assert(fr->n == 0);
+
+	for (i = 0; i < 100; ++i) {
+	    assert(closure_count == i);
+	    assert(closure_count == number_of_closures());
+	    assert(fr->n == i);
+
+	    NEW_CLOSURE(cls[i], inc1, fr);
+	    do_inc1((void *)cls[i]);
+	}
+
+	for (i = 0; i < 100; ++i) {
+	    assert(closure_count == 100-i);
+	    assert(closure_count == number_of_closures());
+
+	    FREE_CLOSURE(cls[i]);
+	}
+
+	FREE(fr);
+    } while (0);
+    assert(closure_count == 0);
+    assert(closure_count == number_of_closures());
+    assert(alloc_count == 0);
 
     do {
 	int arr[6] = {1, 2, 3, 4, 5, 6};

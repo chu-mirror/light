@@ -42,6 +42,18 @@ static inline int position_of(Closure cl) {
     return -1;
 }
 
+size_t number_of_closures()
+{
+    size_t n = 0;
+
+    int i;
+    for (i = 0; i < closure_pool.size << 1; i += 2) {
+	n += closure_pool.label[i];
+    }
+
+    return n;
+}
+
 void init_closure(Closure cl, void *func, void *frame)
 {
     cl->func = func;
@@ -82,12 +94,12 @@ SENTENCE find_an_empty_slot_as_ncl(Closure *ncl_r)
 	closure_pool.label[l] = 1;
 
 	p = l;
-	lv = 0;
+	lv = 1;
 	do {
 	    ++lv;
-	    p = root_of(p>>lv<<lv, p>>lv<<lv + 1<<lv);
-	    closure_pool.label[p] = closure_pool.label[root_of(l, p)]
-		&& closure_pool.label[root_of(p, l+1<<lv)];
+	    p = root_of(p>>lv<<lv, (p>>lv<<lv) + (1<<lv));
+	    closure_pool.label[p] = closure_pool.label[root_of(p+1-(1<<lv-1), p+1)]
+		&& closure_pool.label[root_of(p, p+(1<<lv))];
 	} while (1 << lv != closure_pool.size && closure_pool.label[p] != 0) ;
     } while (0);
     *ncl_r = &closure_pool.closures[l>>1];
@@ -122,13 +134,13 @@ void free_closure(Closure cl)
 {
     int p, lv;
 
-    p = position_of(cl);
-    lv = 0;
+    p = position_of(cl)*2;
+    lv = 1;
     closure_pool.label[p] = 0;
 
     do {
 	++lv;
-	p = root_of(p>>lv<<lv, p>>lv<<lv + 1<<lv);
+	p = root_of(p>>lv<<lv, (p>>lv<<lv) + (1<<lv));
 	if (closure_pool.label[p] == 0) {
 	    break;
 	}

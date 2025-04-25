@@ -18,6 +18,7 @@ void *closure(Closure);
 Closure alloc_closure(void);
 void init_closure(Closure cl, void *func, void *frame);
 void free_closure(Closure);
+size_t number_of_closures(void);
 
 #define CLOSURE(cl) (*(typeof(cl)) closure((void *)(cl)))
 #define NEW_CLOSURE(cl, func, fr) (++closure_count, (cl) = alloc_closure(), init_closure((cl), (func), (fr)))
