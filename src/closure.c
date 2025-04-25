@@ -1,5 +1,7 @@
+#include "light.h"
 #include "closure.h"
 
+#include "stdint.h"
 #include "string.h"
 
 struct closure {
