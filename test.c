@@ -71,8 +71,10 @@ int main() {
 	do_inc1((void *)cl);
 	assert(fr->n == 2);
 
+	FREE_CLOSURE(cl);
 	FREE(fr);
     } while (0);
+    assert(closure_count == 0);
 
     do {
 	int arr[6] = {1, 2, 3, 4, 5, 6};
@@ -206,6 +208,7 @@ int main() {
     } while (0);
 
     assert(alloc_count == 0);
+    assert(closure_count == 0);
 
     printf("Passed all tests\n");
     return 0;

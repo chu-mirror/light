@@ -1,2 +1,3 @@
+#include <stddef.h>
 
-int alloc_count;
+size_t alloc_count;
