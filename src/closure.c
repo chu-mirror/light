@@ -16,11 +16,11 @@ struct closure_pool {
     struct closure *closures;
     size_t size;
     uint8_t *label;
-    Closure bases[128]; /* To ensure the size of pool can double 128 times.
-			 * It's a safe assumption... Right?
-			 * It would lead to severe performance issue if that much
-			 * space was used though.
-			 */
+    Closure bases[64]; /* To ensure the size of pool can double (64-1) times.
+			* It's a safe assumption... Right?
+			* It will lead to severe performance issue if that much
+			* space was used though.
+			*/
     int next_base;
 } closure_pool;
 
