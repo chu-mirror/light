@@ -1,5 +1,3 @@
-#include <assert.h>
-
 #include "light.h"
 #include "table_common.h"
 #include "assoc_table.h"

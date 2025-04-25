@@ -1,18 +1,15 @@
 #ifndef LIGHT_CLOSURE_H
 #define LIGHT_CLOSURE_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <assert.h>
 
-#include "light.h"
-
-#define CLOSURE_NUMBER_MAX 100
+#include "idiom.h"
 
 typedef struct closure *Closure;
 
 extern void *_light_closure_frame;
 extern size_t closure_count;
-
 
 void *closure(Closure);
 Closure alloc_closure(void);

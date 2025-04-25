@@ -1,7 +1,7 @@
 #ifndef LIGHT_H
 #define LIGHT_H
 
-#define LIGHT_VERSION 001
+#define LIGHT_VERSION 002
 
 #include "idiom.h"
 #include "prose.h"
