@@ -78,14 +78,15 @@ int main() {
     assert(alloc_count == 0);
 
     do { /* allocation of closures */
+#define NUMBER_OF_CLOSURES 3000
 	int i;
 	struct inc1_frame *fr;
-	Closure cls[100];
+	Closure cls[NUMBER_OF_CLOSURES];
 
 	NEW0(fr);
 	assert(fr->n == 0);
 
-	for (i = 0; i < 100; ++i) {
+	for (i = 0; i < NUMBER_OF_CLOSURES; ++i) {
 	    assert(closure_count == i);
 	    assert(closure_count == number_of_closures());
 	    assert(fr->n == i);
@@ -94,14 +95,15 @@ int main() {
 	    do_inc1((void *)cls[i]);
 	}
 
-	for (i = 0; i < 100; ++i) {
-	    assert(closure_count == 100-i);
+	for (i = 0; i < NUMBER_OF_CLOSURES; ++i) {
+	    assert(closure_count == NUMBER_OF_CLOSURES-i);
 	    assert(closure_count == number_of_closures());
 
 	    FREE_CLOSURE(cls[i]);
 	}
 
 	FREE(fr);
+#undef NUMBER_OF_CLOSURES
     } while (0);
     assert(closure_count == 0);
     assert(closure_count == number_of_closures());
