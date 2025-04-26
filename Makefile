@@ -1,23 +1,9 @@
 CFLAGS = -g -Iinclude
 
-SOURCES = \
-src/hash.c \
-src/closure.c \
-src/memgr.c \
-src/list.c \
-src/hash_table.c \
-src/assoc_table.c
+-include build.mk
 
-HEADERS = \
-include/light.h \
-include/idiom.h \
-include/hash.h \
-include/memgr.h \
-include/closure.h \
-include/list.h \
-include/hash_table.h \
-include/assoc_table.h
-
+SOURCES = $(LIGHT_FULL_SOURCES)
+HEADERS = $(LIGHT_FULL_HEADERS)
 OBJECTS = $(SOURCES:.c=.o)
 
 all: test
