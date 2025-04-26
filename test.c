@@ -111,7 +111,7 @@ int main() {
 
     do {
 	int arr[6] = {1, 2, 3, 4, 5, 6};
-        List l1 = empty_list, l2 = empty_list, l3;
+        List l1 = empty_list, l2 = empty_list, l3, l4;
 
 	do { /* test |append| */
 	    l1 = _LIST(arr, 3);
@@ -132,6 +132,18 @@ int main() {
 		    ++i;
 		}
 	    } while (0);
+	} while (0);
+
+	do { /* test |copy_list| */
+	    int *elm;
+	    l4 = copy_list(l3);
+	    assert(length(l3) == length(l4));
+
+	    List _l3 = l3;
+	    FOREACH(elm, l4) {
+		assert(elm == car(_l3));
+		_l3 = cdr(_l3);
+	    }
 	} while (0);
 
 	do { /* test |map| */
@@ -182,6 +194,8 @@ int main() {
 	} while (0);
 
 	free_list(&l3);
+	assert(alloc_count == 6);
+	free_list(&l4);
 
 	assert(is_empty_list(l1));
 	assert(is_empty_list(l2));

@@ -33,6 +33,28 @@ List list_from_arr(void *arr, size_t len, size_t size) {
     return l;
 }
 
+List copy_list(List l) {
+    List _l = empty_list;
+
+    do {
+	List tail, __l;
+	void *elm;
+
+	tail = cons(NULL, empty_list);
+	__l = tail;
+	FOREACH(elm, l) {
+	    List nn; /* new node */
+	    nn = cons(elm, empty_list);
+	    tail->rest = nn;
+	    tail = nn;
+	}
+	_l = cdr(__l);
+	FREE(__l);
+    } while (0);
+
+    return _l;
+}
+
 size_t length(List l) {
     size_t len;
 
