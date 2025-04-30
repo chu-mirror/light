@@ -6,6 +6,7 @@ Current support:
 - hash function;
 - closure;
 - list;
+- atom;
 - hash table;
 - assoc table(linear table).
 

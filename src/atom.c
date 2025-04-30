@@ -4,14 +4,14 @@
 #include "atom.h"
 #include "hash_table.h"
 
-static HashTable atoms;
-
 struct atom {
     uint8_t *block;
     size_t len;
 };
 
-uint32_t
+static HashTable atoms;
+
+static uint32_t
 hash_func_atom(const void *a)
 {
     struct atom *_a;
@@ -20,7 +20,7 @@ hash_func_atom(const void *a)
     return hash(_a->block, _a->len);
 }
 
-int
+static int
 equal_func_atom(const void *a1, const void *a2)
 {
     struct atom *_a1, *_a2;
