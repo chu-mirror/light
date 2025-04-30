@@ -6,6 +6,7 @@
 #include "light.h"
 #include "list.h"
 #include "hash_table.h"
+#include "atom.h"
 #include "assoc_table.h"
 
 struct inc1_frame {
@@ -252,6 +253,31 @@ int main() {
 	assert(get_from_assoc_table(tbl, "Chu") == NULL);
 	assert(alloc_count == 3);
 	free_assoc_table(&tbl);
+    } while (0);
+
+    do {
+	char *str1, *str2;
+	CALLOC(str1, 10);
+	CALLOC(str2, 10);
+	strcpy(str1, "Hello");
+	strcpy(str2, "Hello");
+	assert(str1 != str2);
+	assert(atom_str(str1) == atom_str(str2));
+	do {
+	    size_t c;
+	    free_atom_str(str1);
+	    c = alloc_count;
+	    free_atom_str(str2);
+	    assert(c == alloc_count);
+
+	    atom_str(str1);
+	    c = alloc_count;
+	    atom_str(str2);
+	    assert(c == alloc_count);
+	} while (0);
+	FREE(str1);
+	FREE(str2);
+	clear_atoms();
     } while (0);
 
     assert(alloc_count == 0);

@@ -1,6 +1,5 @@
 #include "light.h"
 #include "list.h"
-#include "table_common.h"
 #include "hash_table.h"
 
 struct hash_table {
@@ -130,8 +129,26 @@ void *get_from_hash_table(HashTable tbl, const void *key) {
     return NULL;
 }
 
-void remove_from_hash_table(HashTable tbl, const void *key) {
+List
+get_all_records_from_hash_table(HashTable tbl)
+{
+    List arcds; /* all records */
     List *rcds_r; /* records */
+
+    arcds = empty_list;
+    FOREACH(rcds_r, tbl->slots) {
+	TableRecord *rcd_r;
+        FOREACH(rcd_r, *rcds_r) {
+	    push(rcd_r, &arcds);
+	}
+    }
+    return arcds;
+}
+
+void *
+remove_from_hash_table(HashTable tbl, const void *key) {
+    List *rcds_r; /* records */
+    void *v = NULL;
 
     rcds_r = record_list(tbl, key);
 
@@ -144,7 +161,10 @@ void remove_from_hash_table(HashTable tbl, const void *key) {
 	rcd_r = (TableRecord *) remove_first((void *)cl, rcds_r);
 	FREE_CLOSURE(cl);
 
-	FREE(rcd_r);
+	if (rcd_r != NULL) {
+	    v = rcd_r->v;
+	    FREE(rcd_r);
+	}
     } while (0);
 
     if (is_empty_list(*rcds_r)) {
@@ -155,4 +175,6 @@ void remove_from_hash_table(HashTable tbl, const void *key) {
 	remove_first((void *)cl, &tbl->slots);
 	FREE_CLOSURE(cl);
     }
+
+    return v;
 }

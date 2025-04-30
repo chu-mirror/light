@@ -1,8 +1,9 @@
 #ifndef LIGHT_MEMGR_H
 #define LIGHT_MEMGR_H
 
-#include <stdlib.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 extern size_t alloc_count;
 
@@ -19,5 +20,8 @@ extern size_t alloc_count;
 #define _FREE(p) ((void)(assert(p != NULL), free(p), (p) = NULL))
 
 #define REALLOC_ARRAY(p, len) (p = reallocarray(p, sizeof *(p), len))
+
+#define MOVE(src, dest) (NEW(dest), memcpy((dest), (src), sizeof *(dest)))
+#define MOVE_ARRAY(src, dest, n) (CALLOC(dest, n), memcpy((dest), (src), sizeof *(dest) * (n)))
 
 #endif
