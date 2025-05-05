@@ -8,5 +8,6 @@ Current support:
 - list;
 - atom;
 - hash table;
-- assoc table(linear table).
+- assoc table(linear table);
+- resizable array.
 

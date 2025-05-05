@@ -8,6 +8,7 @@
 #include "hash_table.h"
 #include "atom.h"
 #include "assoc_table.h"
+#include "array.h"
 
 struct inc1_frame {
     int n;
@@ -278,6 +279,28 @@ int main() {
 	FREE(str1);
 	FREE(str2);
 	clear_atoms();
+    } while (0);
+
+    do {
+	Array arr;
+	int *n;
+	arr = new_array();
+
+	*nth(arr, 1) = VALUE(1);
+	RENAME(nth(arr, 1), n);
+	++(*n);
+	assert(*nth(arr, 1) == VALUE(2));
+
+	*nth(arr, 2000) = VALUE(1);
+	RENAME(nth(arr, 2000), n);
+	++(*n);
+	assert(*nth(arr, 2000) == VALUE(2));
+
+	for (int i = 2; i < 2000; ++i) {
+	    assert(*nth(arr, i) == VALUE(0));
+	}
+
+	free_array(arr);
     } while (0);
 
     assert(alloc_count == 0);
