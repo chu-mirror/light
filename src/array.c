@@ -21,10 +21,11 @@ new_array()
 }
 
 void
-free_array(Array arr)
+free_array(Array *arr_r)
 {
-    FREE(arr->elements);
-    FREE(arr);
+    FREE((*arr_r)->elements);
+    FREE(*arr_r);
+    *arr_r = NULL;
 }
 
 void **

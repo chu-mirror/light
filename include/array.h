@@ -4,7 +4,7 @@
 typedef struct array *Array;
 
 Array new_array();
-void free_array(Array arr);
+void free_array(Array *arr_r);
 void **nth(Array arr, int n);
 
 #endif

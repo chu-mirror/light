@@ -9,5 +9,6 @@ Current support:
 - atom;
 - hash table;
 - assoc table(linear table);
-- resizable array.
+- resizable array;
+- deque.
 

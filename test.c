@@ -9,6 +9,7 @@
 #include "atom.h"
 #include "assoc_table.h"
 #include "array.h"
+#include "deque.h"
 
 struct inc1_frame {
     int n;
@@ -300,7 +301,43 @@ int main() {
 	    assert(*nth(arr, i) == VALUE(0));
 	}
 
-	free_array(arr);
+	free_array(&arr);
+    } while (0);
+
+    do {
+	Deque q;
+	void *elm;
+
+	q = new_deque();
+	assert(is_empty_deque(q));
+
+	push_back(q, VALUE(1));
+	assert(*nth_of_deque(q, 0) == VALUE(1));
+	assert(!is_empty_deque(q));
+
+	elm = pop_back(q);
+	assert(elm == VALUE(1));
+	assert(is_empty_deque(q));
+
+	int i;
+	for (i = 0; i < 100; ++i) {
+	    push_back(q, VALUE(i));
+	}
+	for (i = 0; i < 100; ++i) {
+	    push_front(q, VALUE(i));
+	}
+	for (i = 0; i < 100; ++i) {
+	    elm = pop_front(q);
+	    assert(elm == VALUE(99-i));
+	}
+	for (i = 0; i < 100; ++i) {
+	    elm = pop_front(q);
+	    assert(elm == VALUE(i));
+	}
+	assert(is_empty_deque(q));
+
+	free_deque(&q);
+	assert(q == NULL);
     } while (0);
 
     assert(alloc_count == 0);
