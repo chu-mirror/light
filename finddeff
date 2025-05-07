@@ -1,0 +1,76 @@
+#!/usr/bin/python
+
+import sys
+import re
+import fileinput
+from functools import reduce
+from pathlib import Path
+
+definition_is_in = [
+    (f"{t}.h", f"{t}.c") for t in [
+        "hash",
+        "memgr",
+        "closure",
+        "array",
+        "list",
+        "assoc_table",
+        "hash_table",
+        "atom",
+        "deque",
+    ]
+]
+
+light_home = Path(__file__).parent
+
+file_to_analyze = sys.argv[1]
+include_dirs = list(filter(lambda p: p.is_dir(), map(Path, sys.argv[2:])))
+
+def definition_files_of(topic):
+    # rs: relations, deffs: definition files
+    rs = filter(lambda t: t[0] == topic, definition_is_in)
+    deffs = map(lambda t: [t[1]], rs)
+    return reduce(lambda t1, t2: t1 + t2, deffs, [])
+
+def extract_includes(*files):
+    #p: pattern, hs: headers 
+    p = re.compile(r'#[ \t]*include[ \t]*([<"])(?P<header>\w+\.h)[">]')
+    hs = []
+    with fileinput.input(files=files, encoding="utf-8") as f:
+        hs = list(map(lambda m: m.group("header"),
+                      filter(lambda r: r is not None, map(p.match, f))))
+    return hs
+
+def find_header(header):
+    for d in include_dirs:
+        # hp: path of header
+        hp = d / header
+        if hp.exists():
+            return hp.absolute()
+    return None
+
+def is_of_light(header_path):
+    return header_path.relative_to(light_home)
+
+def recurse_all_includes(file):
+    # q: queue, hds: headers
+    q = {file}
+    hds = set()
+
+    while q != set():
+        f = q.pop()
+        for hd in extract_includes(f):
+            p = find_header(hd)
+            if p is None:
+                continue
+            if hd not in hds:
+                q.add(p)
+            if is_of_light(p):
+                hds.add(hd)
+
+    return hds
+        
+# incs: includes, deffs: definition files
+incs = recurse_all_includes(file_to_analyze)
+deffs = set(reduce(lambda l1, l2: l1+l2, map(lambda hd: definition_files_of(hd), incs), []))
+
+print(" ".join(deffs))

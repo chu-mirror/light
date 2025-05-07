@@ -5,3 +5,4 @@ compile_commands.json
 test
 GPATH
 G*TAGS
+__pycache__
