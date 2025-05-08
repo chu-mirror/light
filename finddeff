@@ -4,10 +4,14 @@ import sys
 from pathlib import Path
 from functools import reduce
 
-from analysis import extract_includes, is_of_light, definition_files_of
+from analysis import (
+    extract_includes,
+    is_of_light,
+    definition_files_of,
+    light_home,
+)
 
-file_to_analyze = sys.argv[1]
-include_dirs = list(filter(lambda p: p.is_dir(), map(Path, sys.argv[2:])))
+include_dirs = [light_home / "include"]
 
 def find_header(header):
     for d in include_dirs:
@@ -36,7 +40,10 @@ def definition_files_related_to(file):
                   map(lambda hd: definition_files_of(hd), hds),
                   [])
 
-# incs: includes, deffs: definition files
-deffs = definition_files_related_to(file_to_analyze)
+if __name__ == "__main__":
+    include_dirs += list(filter(lambda p: p.is_dir(), map(Path, sys.argv[2:])))
+    file_to_analyze = sys.argv[1]
+    # incs: includes, deffs: definition files
+    deffs = definition_files_related_to(file_to_analyze)
 
-print(" ".join(deffs))
+    print(" ".join(deffs))
