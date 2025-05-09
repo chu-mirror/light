@@ -1,6 +1,6 @@
 CFLAGS = -g -Iinclude
 
-SOURCES := $(addprefix src/,$(shell ./finddeff test.c include))
+SOURCES := $(addprefix src/,$(shell ./finddeff.py test.c include))
 OBJECTS := $(SOURCES:.c=.o)
 
 all: test
