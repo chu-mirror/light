@@ -12,7 +12,7 @@ extern size_t alloc_count;
 
 #define CALLOC(p, len)                                           \
     (++alloc_count, (p) = (typeof(p))calloc((len), sizeof *(p)))
-#define _CALLOC(p, len) ((p) = (typeof(p) calloc((len), sizeof *(p)))
+#define _CALLOC(p, len) ((p) = (typeof(p))calloc((len), sizeof *(p)))
 
 #define NEW0(p) CALLOC((p), 1)
 #define _NEW0(p) _CALLOC((p), 1)
