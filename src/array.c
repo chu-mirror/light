@@ -41,7 +41,7 @@ nth(Array arr, int n)
     }
     REALLOC_ARRAY(arr->elements, arr->size);
 
-    memset(arr->elements + _size, 0, arr->size - _size);
+    ZEROFY(arr->elements + _size, arr->size - _size);
 
     return &arr->elements[n];
 }

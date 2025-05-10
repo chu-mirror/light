@@ -1,10 +1,10 @@
 #include "light.h"
 #include "list.h"
+#include "array.h"
 #include "hash_table.h"
 
 struct hash_table {
-    size_t size;
-    List *table;
+    Array table;
     List slots;
     uint32_t (*hash_func)(const void *);
     int (*equal_func)(const void *, const void *);
@@ -13,9 +13,11 @@ struct hash_table {
 static inline List *
 record_list(HashTable tbl, const void *key)
 {
+    List *rcds_r;
     uint32_t hv;
     hv = CLOSURE(tbl->hash_func)(key);
-    return &tbl->table[hv % tbl->size];
+    RENAME(nth(tbl->table, hv), rcds_r);
+    return rcds_r;
 }
 
 struct record_key_equal_to_the_key_FRAME {
@@ -46,20 +48,12 @@ equal_to_the_records_reference_FUNC(void *rcds_r)
 }
 
 HashTable
-new_hash_table(
-    size_t n, uint32_t hf(const void *), int eq(const void *, const void *)
-)
+new_hash_table(uint32_t hf(const void *), int eq(const void *, const void *))
 {
     HashTable tbl;
 
     NEW(tbl);
-    do {
-        int p = 0;
-        while (n > 1 << p)
-            ++p;
-        tbl->size = 1 << p;
-    } while (0);
-    CALLOC(tbl->table, tbl->size);
+    tbl->table = new_array();
     tbl->slots = empty_list;
     tbl->hash_func = hf;
     tbl->equal_func = eq;
@@ -80,7 +74,7 @@ free_hash_table(HashTable *tbl_r)
         free_list(rcds_r);
     }
     free_list(&(*tbl_r)->slots);
-    FREE((*tbl_r)->table);
+    free_array(&(*tbl_r)->table);
     FREE(*tbl_r);
 }
 

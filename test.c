@@ -45,7 +45,7 @@ less_than_4(void *n)
 uint32_t
 hash_func_str(const void *str)
 {
-    return hash_str((const char *)str);
+    return hash_str((const char *)str) % 128;
 }
 
 int
@@ -224,14 +224,14 @@ main()
 
     do {
         HashTable tbl;
-        tbl = new_hash_table(5, hash_func_str, equal_func_str);
-        assert(alloc_count == 2);
+        tbl = new_hash_table(hash_func_str, equal_func_str);
+        assert(alloc_count == 3);
 
         put_to_hash_table(tbl, "Chu", "Hello");
-        assert(alloc_count == 5);
+        assert(alloc_count == 6);
 
         put_to_hash_table(tbl, "Mzz", "Welcome");
-        assert(alloc_count == 8);
+        assert(alloc_count == 9);
 
         assert(strcmp((char *)get_from_hash_table(tbl, "Chu"), "Hello") == 0);
         assert(
@@ -242,11 +242,11 @@ main()
         assert(
             strcmp((char *)get_from_hash_table(tbl, "Chu"), "Welcome") == 0
         );
-        assert(alloc_count == 8);
+        assert(alloc_count == 9);
 
         remove_from_hash_table(tbl, "Chu");
         assert(get_from_hash_table(tbl, "Chu") == NULL);
-        assert(alloc_count == 5);
+        assert(alloc_count == 6);
         free_hash_table(&tbl);
     } while (0);
 
