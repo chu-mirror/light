@@ -32,16 +32,16 @@ void **
 nth(Array arr, int n)
 {
     if (n < arr->size) {
-	return &arr->elements[n];
+        return &arr->elements[n];
     }
 
     int _size = arr->size;
-    while (! (n < arr->size)) {
-	arr->size <<= 1;
+    while (!(n < arr->size)) {
+        arr->size <<= 1;
     }
     REALLOC_ARRAY(arr->elements, arr->size);
 
-    memset(arr->elements+_size, 0, arr->size-_size);
-    
+    memset(arr->elements + _size, 0, arr->size - _size);
+
     return &arr->elements[n];
 }

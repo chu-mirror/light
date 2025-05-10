@@ -11,4 +11,3 @@ Current support:
 - assoc table(linear table);
 - resizable array;
 - deque.
-

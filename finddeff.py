@@ -32,7 +32,7 @@ def definition_files_of(topic):
     return reduce(lambda t1, t2: t1 + t2, deffs, [])
 
 def extract_includes(*files):
-    # hs: headers 
+    # hs: headers
     hs = []
     with fileinput.input(files=files, encoding="utf-8") as f:
         hs = list(map(lambda m: m.group("header"),

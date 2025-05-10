@@ -13,14 +13,17 @@ struct record_key_equal_to_the_key_FRAME {
     const void *key;
 };
 
-static int record_key_equal_to_the_key_FUNC(void *rcd) {
+static int
+record_key_equal_to_the_key_FUNC(void *rcd)
+{
     struct record_key_equal_to_the_key_FRAME *fr;
     INIT_CLOSURE_FRAME(fr);
 
     return CLOSURE(fr->tbl->equal_func)(fr->key, ((TableRecord *)rcd)->k);
 }
 
-AssocTable new_assoc_table(int eq(const void *, const void *))
+AssocTable
+new_assoc_table(int eq(const void *, const void *))
 {
     AssocTable tbl;
     NEW(tbl);
@@ -31,46 +34,49 @@ AssocTable new_assoc_table(int eq(const void *, const void *))
     return tbl;
 }
 
-void free_assoc_table(AssocTable *tbl_r)
+void
+free_assoc_table(AssocTable *tbl_r)
 {
     do {
-	TableRecord *rcd_r;
-        FOREACH(rcd_r, (*tbl_r)->records) {
-	    FREE(rcd_r);
-	}
+        TableRecord *rcd_r;
+        FOREACH (rcd_r, (*tbl_r)->records) {
+            FREE(rcd_r);
+        }
     } while (0);
 
     free_list(&(*tbl_r)->records);
     FREE(*tbl_r);
 }
 
-void put_to_assoc_table(AssocTable tbl, const void *key, void *v)
+void
+put_to_assoc_table(AssocTable tbl, const void *key, void *v)
 {
     do { /* if |key| is already in |tbl|, set to |v| and return */
-	Closure cl;
-	List res;
-	struct record_key_equal_to_the_key_FRAME fr = {tbl, key};
-	
-	NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
-	res = find_first((void *)cl, tbl->records);
-	FREE_CLOSURE(cl);
+        Closure cl;
+        List res;
+        struct record_key_equal_to_the_key_FRAME fr = {tbl, key};
 
-	if (!is_empty_list(res)) {
-	    ((TableRecord *)car(res))->v = v;
-	    return;
-	}
+        NEW_CLOSURE(cl, record_key_equal_to_the_key_FUNC, &fr);
+        res = find_first((void *)cl, tbl->records);
+        FREE_CLOSURE(cl);
+
+        if (!is_empty_list(res)) {
+            ((TableRecord *)car(res))->v = v;
+            return;
+        }
     } while (0);
 
     do { /* Create new record */
-	TableRecord *nrcd_r;
-	NEW(nrcd_r);
-	nrcd_r->k = key;
-	nrcd_r->v = v;
-	push(nrcd_r, &tbl->records);
+        TableRecord *nrcd_r;
+        NEW(nrcd_r);
+        nrcd_r->k = key;
+        nrcd_r->v = v;
+        push(nrcd_r, &tbl->records);
     } while (0);
 }
 
-void *get_from_assoc_table(AssocTable tbl, const void *key)
+void *
+get_from_assoc_table(AssocTable tbl, const void *key)
 {
     Closure cl;
     List res;
@@ -81,12 +87,13 @@ void *get_from_assoc_table(AssocTable tbl, const void *key)
     FREE_CLOSURE(cl);
 
     if (!is_empty_list(res)) {
-	return ((TableRecord *)car(res))->v;
+        return ((TableRecord *)car(res))->v;
     }
     return NULL;
 }
 
-void remove_from_assoc_table(AssocTable tbl, const void *key)
+void
+remove_from_assoc_table(AssocTable tbl, const void *key)
 {
     Closure cl;
     TableRecord *rcd_r;

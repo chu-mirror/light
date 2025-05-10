@@ -22,6 +22,7 @@ extern size_t alloc_count;
 #define REALLOC_ARRAY(p, len) (p = reallocarray(p, sizeof *(p), len))
 
 #define MOVE(src, dest) (NEW(dest), memcpy((dest), (src), sizeof *(dest)))
-#define MOVE_ARRAY(src, dest, n) (CALLOC(dest, n), memcpy((dest), (src), sizeof *(dest) * (n)))
+#define MOVE_ARRAY(src, dest, n)                                   \
+    (CALLOC(dest, n), memcpy((dest), (src), sizeof *(dest) * (n)))
 
 #endif
