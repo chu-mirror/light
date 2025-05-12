@@ -85,10 +85,23 @@ free_deque(Deque *q_r)
     *q_r = NULL;
 }
 
+void
+clear_deque(Deque q)
+{
+    q->head = 0;
+    q->tail = 0;
+}
+
 int
 is_empty_deque(Deque q)
 {
     return q->tail == q->head;
+}
+
+int
+length_of_deque(Deque q)
+{
+    return used_slots(q);
 }
 
 void
