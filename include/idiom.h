@@ -11,6 +11,8 @@
  * integers. */
 #define VALUE(v) (void *)(ptrdiff_t)(v)
 
-#define ZEROFY(p, n) memset((p), 0, sizeof(p) * (n))
+#define ZEROFY(p, n) memset((p), 0, sizeof(*p) * (n))
+
+#define COPY(src, dest) memcpy((dest), (src), sizeof(*(src)))
 
 #endif
