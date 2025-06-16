@@ -12,7 +12,11 @@
 #define VALUE(v) (void *)(ptrdiff_t)(v)
 
 #define ZEROFY(p, n) memset((p), 0, sizeof(*p) * (n))
+#define ZEROFY_SINGLE(p) ZEROFY(p, 1)
 
 #define COPY(src, dest) memcpy((dest), (src), sizeof(*(src)))
+
+#define SIGN(v) (((v) > 0) - ((v) < 0))
+#define BETWEEN(v, l, r) ((((l) <= (v)) && ((v) < (r))) || (((r) <= (v)) && ((v) < (l))))
 
 #endif
