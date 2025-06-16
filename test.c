@@ -1,5 +1,6 @@
 /* #define NDEBUG */
 #include <stdio.h>
+#include <stdint.h>
 #include <string.h>
 #include <assert.h>
 
@@ -309,6 +310,10 @@ main()
         Array arr;
         int *n;
         arr = new_array();
+
+        *nth(arr, 0) = VALUE((int8_t)-1);
+        RENAME(nth(arr, 0), n);
+        assert(*nth(arr, 0) == VALUE(-1));
 
         *nth(arr, 1) = VALUE(1);
         RENAME(nth(arr, 1), n);
