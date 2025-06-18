@@ -111,8 +111,8 @@ find_an_empty_slot_as_ncl(Closure *ncl_r)
             ++lv;
             p = root_of(p >> lv << lv, (p >> lv << lv) + (1 << lv));
             closure_pool.label[p] =
-                closure_pool.label[root_of(p + 1 - (1 << lv - 1), p + 1)]
-                && closure_pool.label[root_of(p, p + (1 << lv))];
+                closure_pool.label[root_of(p + 1 - (1 << (lv - 1)), p + 1)]
+                && closure_pool.label[root_of(p + 1, p + 1 + (1 << (lv - 1)))];
         } while (1 << lv != closure_pool.size && closure_pool.label[p] != 0);
     } while (0);
     *ncl_r = &closure_pool.closures[l >> 1];
