@@ -154,3 +154,9 @@ nth_of_deque(Deque q, int n)
     }
     return nth(q->array, (q->head + n) % q->size);
 }
+
+void *
+last_value_of_deque(Deque q)
+{
+    return *nth_of_deque(q, used_slots(q)-1);
+}

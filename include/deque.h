@@ -13,5 +13,6 @@ void push_front(Deque q, void *elm);
 void *pop_back(Deque q);
 void *pop_front(Deque q);
 void **nth_of_deque(Deque q, int n);
+void *last_value_of_deque(Deque q);
 
 #endif
