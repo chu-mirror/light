@@ -7,4 +7,10 @@
 #define SENTENCE void
 #endif
 
+#ifdef NDEBUG
+#define WORD static inline
+#else
+#define WORD
+#endif
+
 #endif
