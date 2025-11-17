@@ -2,6 +2,7 @@
 
 import sys
 import re
+import os
 import fileinput
 
 from pathlib import Path
@@ -79,4 +80,9 @@ if __name__ == "__main__":
     # incs: includes, deffs: definition files
     deffs = definition_files_related_to(file_to_analyze)
 
-    print(" ".join(deffs))
+    print(" ".join(
+        map(
+            lambda f: os.path.normpath(os.path.join(os.path.dirname(__file__), "src", f)),
+            deffs
+        )
+    ))
