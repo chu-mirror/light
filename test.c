@@ -11,6 +11,7 @@
 #include "assoc_table.h"
 #include "array.h"
 #include "deque.h"
+#include "str.h"
 
 struct inc1_frame {
     int n;
@@ -366,6 +367,27 @@ main()
 
         free_deque(&q);
         assert(q == NULL);
+    } while (0);
+
+    do {
+	Str str;
+	str = new_str("");
+	for (int i = 0; i < 10; ++i) {
+	    static char num[2];
+	    num[0] = '0';
+	    num[0] += i;
+	    str_extend(str, num);
+	}
+	assert(strcmp(raw_string(str), "0123456789") == 0);
+	assert(str_length(str) == 10);
+	free_str(&str);
+
+	str = new_str("");
+	for (int i = 0; i < 10; ++i) {
+	    str_extend(str, "Hello");
+	}
+	assert(str_length(str) == 10 * strlen("Hello"));
+	free_str(&str);
     } while (0);
 
     assert(alloc_count == 0);

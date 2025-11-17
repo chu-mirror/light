@@ -18,6 +18,7 @@ definition_is_in = [
         "hash_table",
         "atom",
         "deque",
+        "str",
     ]
 ]
 
