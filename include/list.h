@@ -24,6 +24,7 @@ List push(void *elm, List *l_r);
 void *pop(List *l_r);
 void remove_all(int jdg(void *), List *l_r);
 void *remove_first(int jdg(void *), List *l_r);
+void reverse(List *l_r);
 
 static inline void *
 cadr(List l)

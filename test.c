@@ -133,6 +133,22 @@ main()
         int arr[6] = {1, 2, 3, 4, 5, 6};
         List l1 = empty_list, l2 = empty_list, l3, l4;
 
+	do { /* test |reverse| */
+	    l1 = _LIST(arr, 6);
+	    reverse(&l1);
+	    
+            do {
+                int i, *np;
+
+                i = 0;
+                FOREACH (np, l1) {
+                    assert(*np == 6-i);
+                    ++i;
+                }
+            } while (0);
+	    free_list(&l1);
+	} while (0);
+
         do { /* test |append| */
             l1 = _LIST(arr, 3);
             assert(length(l1) == 3);

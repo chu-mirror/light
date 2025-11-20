@@ -197,3 +197,21 @@ remove_first(int jdg(void *), List *l_r)
         return pop(&l);
     } while (0);
 }
+
+void
+reverse(List *l_r)
+{
+    List l, ll;
+
+    l = *l_r;
+    ll = empty_list;
+
+    while (l != empty_list) {
+	List l_t = l->rest;
+	l->rest = ll;
+	ll = l;
+	l = l_t;
+    }
+
+    *l_r = ll;
+}
