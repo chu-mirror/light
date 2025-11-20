@@ -21,6 +21,8 @@ definition_is_in = [
         "deque",
         "str",
     ]
+] + [
+    ("hash_table.h", "array.c"),
 ]
 
 light_home = Path(__file__).parent
