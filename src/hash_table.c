@@ -48,18 +48,14 @@ equal_to_the_records_reference_FUNC(void *rcds_r)
     return rcds_r == fr->records_reference;
 }
 
-HashTable
-new_hash_table(uint32_t hf(const void *), int eq(const void *, const void *))
+void
+new_hash_table(HashTable *tbl_r, uint32_t hf(const void *), int eq(const void *, const void *))
 {
-    HashTable tbl;
-
-    NEW(tbl);
-    tbl->table = new_array();
-    tbl->slots = empty_list;
-    tbl->hash_func = hf;
-    tbl->equal_func = eq;
-
-    return tbl;
+    NEW0(*tbl_r);
+    new_array(&(*tbl_r)->table);
+    (*tbl_r)->slots = empty_list;
+    (*tbl_r)->hash_func = hf;
+    (*tbl_r)->equal_func = eq;
 }
 
 static uint32_t
@@ -74,10 +70,10 @@ equal_func_str(const void *s1, const void *s2)
     return strcmp((const char *)s1, (const char *)s2) == 0;
 }
 
-HashTable
-new_string_hash_table()
+void
+new_string_hash_table(HashTable *tbl_r)
 {
-    return new_hash_table(hash_func_str, equal_func_str);
+    new_hash_table(tbl_r, hash_func_str, equal_func_str);
 }
 
 void
@@ -120,7 +116,7 @@ put_to_hash_table(HashTable tbl, const void *key, void *v)
     } while (0);
 
     do { /* create a new record */
-        TableRecord *nrcd_r; /* new record */
+        TableRecord *nrcd_r = NULL; /* new record */
         do { /* initialize the new record */
             NEW(nrcd_r);
             nrcd_r->k = key;

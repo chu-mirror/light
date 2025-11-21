@@ -3,7 +3,7 @@
 
 typedef struct assoc_table *AssocTable;
 
-AssocTable new_assoc_table(int eq(const void *, const void *));
+void new_assoc_table(AssocTable *tbl_r, int eq(const void *, const void *));
 void free_assoc_table(AssocTable *tbl_r);
 
 void *get_from_assoc_table(AssocTable tbl, const void *key);

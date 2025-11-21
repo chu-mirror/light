@@ -3,7 +3,7 @@
 
 typedef struct array *Array;
 
-Array new_array();
+void new_array(Array *arr_r);
 void free_array(Array *arr_r);
 void **nth(Array arr, int n);
 

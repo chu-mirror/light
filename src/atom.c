@@ -38,10 +38,10 @@ void *
 atom(const uint8_t *blk, size_t len)
 {
     struct atom a;
-    uint8_t *_blk;
+    uint8_t *_blk = NULL;
     void *p;
     if (atoms == NULL) {
-        atoms = new_hash_table(hash_func_atom, equal_func_atom);
+        new_hash_table(&atoms, hash_func_atom, equal_func_atom);
     }
 
     MOVE_ARRAY(blk, _blk, len);
@@ -51,7 +51,7 @@ atom(const uint8_t *blk, size_t len)
     p = get_from_hash_table(atoms, &a);
 
     if (p == NULL) {
-        struct atom *a_r;
+        struct atom *a_r = NULL;
         MOVE(&a, a_r);
         put_to_hash_table(atoms, a_r, a_r);
         return a_r;

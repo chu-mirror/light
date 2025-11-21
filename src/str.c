@@ -11,19 +11,17 @@ struct str {
     int mem_size;
 };
 
-Str
-new_str(char *s)
+void
+new_str(Str *str_r, char *s)
 {
-    Str str;
-    NEW(str);
-    str->len = strlen(s);
-    str->mem_size = INITIAL_MEM_SIZE;
-    while (str->mem_size < str->len + 1) {
-	str->mem_size <<= 1;
+    NEW0(*str_r);
+    (*str_r)->len = strlen(s);
+    (*str_r)->mem_size = INITIAL_MEM_SIZE;
+    while ((*str_r)->mem_size < (*str_r)->len + 1) {
+	(*str_r)->mem_size <<= 1;
     }
-    CALLOC(str->raw_string, str->mem_size);
-    strcpy(str->raw_string, s);
-    return str;
+    CALLOC((*str_r)->raw_string, (*str_r)->mem_size);
+    strcpy((*str_r)->raw_string, s);
 }
 
 void

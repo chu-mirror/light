@@ -22,16 +22,13 @@ record_key_equal_to_the_key_FUNC(void *rcd)
     return CLOSURE(fr->tbl->equal_func)(fr->key, ((TableRecord *)rcd)->k);
 }
 
-AssocTable
-new_assoc_table(int eq(const void *, const void *))
+void
+new_assoc_table(AssocTable *tbl_r, int eq(const void *, const void *))
 {
-    AssocTable tbl;
-    NEW(tbl);
+    NEW(*tbl_r);
 
-    tbl->records = empty_list;
-    tbl->equal_func = eq;
-
-    return tbl;
+    (*tbl_r)->records = empty_list;
+    (*tbl_r)->equal_func = eq;
 }
 
 void
@@ -67,7 +64,7 @@ put_to_assoc_table(AssocTable tbl, const void *key, void *v)
     } while (0);
 
     do { /* Create new record */
-        TableRecord *nrcd_r;
+        TableRecord *nrcd_r = NULL;
         NEW(nrcd_r);
         nrcd_r->k = key;
         nrcd_r->v = v;

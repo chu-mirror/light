@@ -9,7 +9,7 @@ struct list {
 List
 cons(void *ele, List l)
 {
-    List _l;
+    List _l = NULL;
 
     NEW(_l);
     _l->first = ele;

@@ -65,16 +65,14 @@ enlarge_deque(Deque q)
     q->size = ns;
 }
 
-Deque
-new_deque()
+void
+new_deque(Deque *q_r)
 {
-    Deque q;
-    NEW(q);
-    q->array = new_array();
-    q->head = 0;
-    q->tail = 0;
-    q->size = 2;
-    return q;
+    NEW0(*q_r);
+    new_array(&(*q_r)->array);
+    (*q_r)->head = 0;
+    (*q_r)->tail = 0;
+    (*q_r)->size = 2;
 }
 
 void

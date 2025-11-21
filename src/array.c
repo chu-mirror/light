@@ -10,14 +10,12 @@ struct array {
     int size;
 };
 
-Array
-new_array()
+void
+new_array(Array *arr_r)
 {
-    Array arr;
-    NEW(arr);
-    arr->size = INITIAL_ARRAY_SIZE;
-    CALLOC(arr->elements, INITIAL_ARRAY_SIZE);
-    return arr;
+    NEW0(*arr_r);
+    (*arr_r)->size = INITIAL_ARRAY_SIZE;
+    CALLOC((*arr_r)->elements, INITIAL_ARRAY_SIZE);
 }
 
 void

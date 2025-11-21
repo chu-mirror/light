@@ -3,7 +3,7 @@
 
 typedef struct deque *Deque;
 
-Deque new_deque();
+void new_deque(Deque *q_r);
 void free_deque(Deque *q_r);
 void clear_deque(Deque q);
 int is_empty_deque(Deque q);

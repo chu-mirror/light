@@ -72,7 +72,7 @@ main()
     } while (0);
 
     do { /* basic usage of closure */
-        struct inc1_frame *fr;
+        struct inc1_frame *fr = NULL;
         Closure cl;
         NEW0(fr);
         assert(fr->n == 0);
@@ -94,7 +94,7 @@ main()
     do { /* allocation of closures */
 #define NUMBER_OF_CLOSURES 3000
         int i;
-        struct inc1_frame *fr;
+        struct inc1_frame *fr = NULL;
         Closure cls[NUMBER_OF_CLOSURES];
 
         NEW0(fr);
@@ -235,8 +235,8 @@ main()
     assert(alloc_count == 0);
 
     do {
-        HashTable tbl;
-        tbl = new_string_hash_table();
+	HashTable tbl = NULL;
+        new_string_hash_table(&tbl);
         assert(alloc_count == 3);
 
         put_to_hash_table(tbl, "Chu", "Hello");
@@ -265,8 +265,8 @@ main()
     assert(alloc_count == 0);
 
     do {
-        AssocTable tbl;
-        tbl = new_assoc_table(equal_func_str);
+        AssocTable tbl = NULL;
+        new_assoc_table(&tbl, equal_func_str);
         assert(alloc_count == 1);
 
         put_to_assoc_table(tbl, "Chu", "Hello");
@@ -293,7 +293,7 @@ main()
     } while (0);
 
     do {
-        char *str1, *str2;
+        char *str1 = NULL, *str2 = NULL;
         CALLOC(str1, 10);
         CALLOC(str2, 10);
         strcpy(str1, "Hello");
@@ -318,9 +318,9 @@ main()
     } while (0);
 
     do {
-        Array arr;
+        Array arr = NULL;
         int *n;
-        arr = new_array();
+        new_array(&arr);
 
         *nth(arr, 0) = VALUE((int8_t)-1);
         RENAME(nth(arr, 0), n);
@@ -344,10 +344,10 @@ main()
     } while (0);
 
     do {
-        Deque q;
+        Deque q = NULL;
         void *elm;
 
-        q = new_deque();
+        new_deque(&q);
         assert(is_empty_deque(q));
 
         push_back(q, VALUE(1));
@@ -380,8 +380,8 @@ main()
     } while (0);
 
     do {
-	Str str;
-	str = new_str("");
+	Str str = NULL;
+	new_str(&str, "");
 	for (int i = 0; i < 10; ++i) {
 	    static char num[2];
 	    num[0] = '0';
@@ -392,7 +392,7 @@ main()
 	assert(str_length(str) == 10);
 	free_str(&str);
 
-	str = new_str("");
+	new_str(&str, "");
 	for (int i = 0; i < 10; ++i) {
 	    str_extend(str, "Hello");
 	}
