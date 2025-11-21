@@ -44,16 +44,10 @@ less_than_4(void *n)
     return *(int *)n < 4;
 }
 
-uint32_t
-hash_func_str(const void *str)
+static int
+equal_func_str(const void *s1, const void *s2)
 {
-    return hash_str((const char *)str) % 128;
-}
-
-int
-equal_func_str(const void *str1, const void *str2)
-{
-    return strcmp((const char *)str1, (const char *)str2) == 0;
+    return strcmp((const char *)s1, (const char *)s2) == 0;
 }
 
 int
@@ -242,7 +236,7 @@ main()
 
     do {
         HashTable tbl;
-        tbl = new_hash_table(hash_func_str, equal_func_str);
+        tbl = new_string_hash_table();
         assert(alloc_count == 3);
 
         put_to_hash_table(tbl, "Chu", "Hello");

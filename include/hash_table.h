@@ -10,6 +10,7 @@ typedef struct hash_table *HashTable;
 
 HashTable
 new_hash_table(uint32_t hf(const void *), int eq(const void *, const void *));
+HashTable new_string_hash_table();
 void free_hash_table(HashTable *tbl_r);
 List get_all_records_from_hash_table(HashTable tbl);
 

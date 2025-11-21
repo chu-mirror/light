@@ -1,6 +1,7 @@
 #include "light.h"
 #include "list.h"
 #include "array.h"
+#include "hash.h"
 #include "hash_table.h"
 
 struct hash_table {
@@ -59,6 +60,24 @@ new_hash_table(uint32_t hf(const void *), int eq(const void *, const void *))
     tbl->equal_func = eq;
 
     return tbl;
+}
+
+static uint32_t
+hash_func_str(const void *s)
+{
+    return hash_str((const char *)s) % 1024;
+}
+
+static int
+equal_func_str(const void *s1, const void *s2)
+{
+    return strcmp((const char *)s1, (const char *)s2) == 0;
+}
+
+HashTable
+new_string_hash_table()
+{
+    return new_hash_table(hash_func_str, equal_func_str);
 }
 
 void
