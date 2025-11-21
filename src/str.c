@@ -60,3 +60,10 @@ str_extend(Str str, char *s)
     strcpy(str->raw_string + str->len, s);
     str->len = new_len;
 }
+
+void
+str_append(Str str, char c)
+{
+    char s[2] = {c, '\0'};
+    str_extend(str, s);
+}

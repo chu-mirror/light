@@ -7,11 +7,11 @@
 
 extern size_t alloc_count;
 
-#define NEW(p) (++alloc_count, (p) = (typeof(p))malloc(sizeof *(p)))
+#define NEW(p) (++alloc_count, assert((p) == NULL), (p) = (typeof(p))malloc(sizeof *(p)))
 #define NEW_(p) ((p) = malloc(sizeof *(p)))
 
 #define CALLOC(p, len)                                           \
-    (++alloc_count, (p) = (typeof(p))calloc((len), sizeof *(p)))
+    (++alloc_count, assert((p) == NULL), (p) = (typeof(p))calloc((len), sizeof *(p)))
 #define CALLOC_(p, len) ((p) = (typeof(p))calloc((len), sizeof *(p)))
 
 #define NEW0(p) CALLOC((p), 1)
