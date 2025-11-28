@@ -15,7 +15,7 @@
 #include "state.h"
 
 struct inc1_frame {
-    int n;
+    int *n_r;
 };
 
 void
@@ -24,7 +24,7 @@ inc1(void)
     struct inc1_frame *fr;
 
     INIT_CLOSURE_FRAME(fr);
-    ++fr->n;
+    ++*fr->n_r;
 }
 
 void
@@ -224,18 +224,20 @@ main()
     } while (0);
 
     do { /* basic usage of closure */
+        int n = 0;
         struct inc1_frame *fr = NULL;
         Closure cl;
         NEW0(fr);
-        assert(fr->n == 0);
+        fr->n_r = &n;
+        assert(n == 0);
 
         NEW_CLOSURE(cl, inc1, fr);
 
         do_inc1((void *)cl);
-        assert(fr->n == 1);
+        assert(n == 1);
 
         do_inc1((void *)cl);
-        assert(fr->n == 2);
+        assert(n == 2);
 
         FREE_CLOSURE(cl);
         FREE(fr);
@@ -245,17 +247,19 @@ main()
 
     do { /* allocation of closures */
 #define NUMBER_OF_CLOSURES 3000
-        int i;
+        int i, n;
         struct inc1_frame *fr = NULL;
         Closure cls[NUMBER_OF_CLOSURES];
 
         NEW0(fr);
-        assert(fr->n == 0);
+        assert(fr->n_r == 0);
+        n = 0;
+        fr->n_r = &n;
 
         for (i = 0; i < NUMBER_OF_CLOSURES; ++i) {
             assert(closure_count == i);
             assert(closure_count == number_of_closures());
-            assert(fr->n == i);
+            assert(n == i);
 
             NEW_CLOSURE(cls[i], inc1, fr);
             do_inc1((void *)cls[i]);
