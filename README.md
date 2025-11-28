@@ -10,4 +10,7 @@ Current support:
 - hash table;
 - assoc table(linear table);
 - resizable array;
-- deque.
+- deque;
+- resizable string;
+- state machine(a subset of [Harel 1987]).
+

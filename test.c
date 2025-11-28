@@ -12,6 +12,7 @@
 #include "array.h"
 #include "deque.h"
 #include "str.h"
+#include "state.h"
 
 struct inc1_frame {
     int n;
@@ -48,6 +49,157 @@ static int
 equal_func_str(const void *s1, const void *s2)
 {
     return strcmp((const char *)s1, (const char *)s2) == 0;
+}
+
+int state_signal_forward;
+int state_signal_backward;
+int state_signal_1;
+int state_signal_2;
+
+State state_machine;
+State state1;
+State state11;
+State state12;
+State state2;
+State state21;
+State state22;
+
+struct state_local {
+    int handled_signals;
+    int passed_signals;
+};
+State current_state;
+
+int total_handled_signals;
+
+static State state_in(State s, Signal sig)
+{
+    NEW0(*(struct state_local **)(state_local(s)));
+    return NULL;
+}
+
+static State state_out(State s, Signal sig)
+{
+    struct state_local *lc;
+    RENAME(*state_local(s), lc);
+    total_handled_signals += lc->handled_signals;
+    FREE(*state_local(s));
+    return NULL;
+}
+
+static State state11_handler(State s, Signal sig)
+{
+    struct state_local *lc;
+    RENAME(*state_local(s), lc);
+
+    if (sig == &state_signal_forward) {
+	++lc->handled_signals;
+	return state12;
+    }
+    ++lc->passed_signals;
+    return NULL;
+}
+
+static State state12_handler(State s, Signal sig)
+{
+    struct state_local *lc;
+    RENAME(*state_local(s), lc);
+
+    if (sig == &state_signal_backward) {
+	++lc->handled_signals;
+	return state11;
+    }
+
+    ++lc->passed_signals;
+    return NULL;
+}
+
+static State state1_in(State s, Signal sig)
+{
+    NEW0(*(struct state_local **)(state_local(s)));
+
+    if (sig == NULL) {
+	return state11;
+    }
+
+    return NULL;
+}
+
+static State state1_handler(State s, Signal sig)
+{
+    struct state_local *lc;
+    RENAME(*state_local(s), lc);
+
+    if (sig == &state_signal_forward && state_active_child(s) == state12) {
+	++lc->handled_signals;
+	return state2;
+    }
+
+    if (sig == &state_signal_backward && state_active_child(s) == state11) {
+	++lc->handled_signals;
+	return state2;
+    }
+
+    ++lc->passed_signals;
+    return NULL;
+}
+
+static State state21_handler(State s, Signal sig)
+{
+    struct state_local *lc;
+    RENAME(*state_local(s), lc);
+
+    if (sig == &state_signal_1) {
+	++lc->handled_signals;
+	return s;
+    }
+
+    ++lc->passed_signals;
+    return NULL;
+}
+
+static State state22_handler(State s, Signal sig)
+{
+    struct state_local *lc;
+    RENAME(*state_local(s), lc);
+
+    if (sig == &state_signal_2) {
+	++lc->handled_signals;
+	return s;
+    }
+
+    ++lc->passed_signals;
+    return NULL;
+}
+
+static State state2_handler(State s, Signal sig)
+{
+    struct state_local *lc;
+    RENAME(*state_local(s), lc);
+
+    if (sig == &state_signal_forward) {
+	++lc->handled_signals;
+	return state1;
+    }
+
+    if (sig == &state_signal_backward) {
+	++lc->handled_signals;
+	return state1;
+    }
+
+    ++lc->passed_signals;
+    return NULL;
+}
+
+static State state_machine_in(State s, Signal sig)
+{
+    NEW0(*(struct state_local **)(state_local(s)));
+
+    if (sig == NULL) {
+	return state1;
+    }
+
+    return NULL;
 }
 
 int
@@ -398,6 +550,91 @@ main()
 	}
 	assert(str_length(str) == 10 * strlen("Hello"));
 	free_str(&str);
+    } while (0);
+
+    do { /* test state machine */
+	new_state(&state_machine, root_state, STATE_XOR, NULL);
+	state_register_in_func(state_machine, state_machine_in);
+	state_register_out_func(state_machine, state_out);
+
+	new_state(&state1, state_machine, STATE_XOR, state1_handler);
+	state_register_in_func(state1, state1_in);
+	state_register_out_func(state1, state_out);
+
+	new_state(&state11, state1, STATE_XOR, state11_handler);
+	state_register_in_func(state11, state_in);
+	state_register_out_func(state11, state_out);
+
+	new_state(&state12, state1, STATE_XOR, state12_handler);
+	state_register_in_func(state12, state_in);
+	state_register_out_func(state12, state_out);
+
+	new_state(&state2, state_machine, STATE_AND, state2_handler);
+	state_register_in_func(state2, state_in);
+	state_register_out_func(state2, state_out);
+
+	new_state(&state21, state2, STATE_XOR, state21_handler);
+	state_register_in_func(state21, state_in);
+	state_register_out_func(state21, state_out);
+
+	new_state(&state22, state2, STATE_XOR, state22_handler);
+	state_register_in_func(state22, state_in);
+	state_register_out_func(state22, state_out);
+
+	int signals_sent = 0;
+
+	state_init(state_machine);
+	assert(state_active_child(state_machine) == state1);
+	assert(state_active_child(state1) == state11);
+
+	assert(state_handle_signal(state_machine, &state_signal_forward));
+	signals_sent++;
+	assert(state_active_child(state_machine) == state1);
+	assert(state_active_child(state1) == state12);
+
+	assert(state_handle_signal(state_machine, &state_signal_backward));
+	signals_sent++;
+	assert(state_active_child(state_machine) == state1);
+	assert(state_active_child(state1) == state11);
+
+	assert(state_handle_signal(state_machine, &state_signal_forward));
+	signals_sent++;
+	assert(state_active_child(state_machine) == state1);
+	assert(state_active_child(state1) == state12);
+
+	assert(state_handle_signal(state_machine, &state_signal_forward));
+	signals_sent++;
+	assert(state_active_child(state_machine) == state2);
+
+	assert(state_handle_signal(state_machine, &state_signal_1));
+	signals_sent++;
+	assert(state_handle_signal(state_machine, &state_signal_1));
+	signals_sent++;
+	assert(state_handle_signal(state_machine, &state_signal_2));
+	signals_sent++;
+
+	struct state_local *lc;
+	RENAME(*state_local(state21), lc);
+	assert(lc->handled_signals ==  2);
+
+	RENAME(*state_local(state22), lc);
+	assert(lc->handled_signals ==  1);
+
+	assert(state_handle_signal(state_machine, &state_signal_forward));
+	signals_sent++;
+	assert(state_active_child(state_machine) == state1);
+	assert(state_active_child(state1) == state12);
+
+	state_clear(state_machine);
+	assert(total_handled_signals == signals_sent);
+
+	free_state(&state22);
+	free_state(&state21);
+	free_state(&state2);
+	free_state(&state12);
+	free_state(&state11);
+	free_state(&state1);
+	free_state(&state_machine);
     } while (0);
 
     assert(alloc_count == 0);

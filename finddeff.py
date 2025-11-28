@@ -20,6 +20,7 @@ definition_is_in = [
         "atom",
         "deque",
         "str",
+        "state",
     ]
 ] + [
     ("hash_table.h", "array.c"),
