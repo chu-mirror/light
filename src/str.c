@@ -18,7 +18,7 @@ new_str(Str *str_r, char *s)
     (*str_r)->len = strlen(s);
     (*str_r)->mem_size = INITIAL_MEM_SIZE;
     while ((*str_r)->mem_size < (*str_r)->len + 1) {
-	(*str_r)->mem_size <<= 1;
+        (*str_r)->mem_size <<= 1;
     }
     CALLOC((*str_r)->raw_string, (*str_r)->mem_size);
     strcpy((*str_r)->raw_string, s);
@@ -52,7 +52,7 @@ str_extend(Str str, char *s)
 
     new_len = str->len + strlen(s);
     while (str->mem_size < new_len) {
-	str->mem_size <<= 1;
+        str->mem_size <<= 1;
     }
     REALLOC_ARRAY(str->raw_string, str->mem_size);
     strcpy(str->raw_string + str->len, s);

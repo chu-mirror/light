@@ -93,8 +93,8 @@ static State state11_handler(State s, Signal sig)
     RENAME(*state_local(s), lc);
 
     if (sig == &state_signal_forward) {
-	++lc->handled_signals;
-	return state12;
+        ++lc->handled_signals;
+        return state12;
     }
     ++lc->passed_signals;
     return NULL;
@@ -106,8 +106,8 @@ static State state12_handler(State s, Signal sig)
     RENAME(*state_local(s), lc);
 
     if (sig == &state_signal_backward) {
-	++lc->handled_signals;
-	return state11;
+        ++lc->handled_signals;
+        return state11;
     }
 
     ++lc->passed_signals;
@@ -119,7 +119,7 @@ static State state1_in(State s, Signal sig)
     NEW0(*(struct state_local **)(state_local(s)));
 
     if (sig == NULL) {
-	return state11;
+        return state11;
     }
 
     return NULL;
@@ -131,13 +131,13 @@ static State state1_handler(State s, Signal sig)
     RENAME(*state_local(s), lc);
 
     if (sig == &state_signal_forward && state_active_child(s) == state12) {
-	++lc->handled_signals;
-	return state2;
+        ++lc->handled_signals;
+        return state2;
     }
 
     if (sig == &state_signal_backward && state_active_child(s) == state11) {
-	++lc->handled_signals;
-	return state2;
+        ++lc->handled_signals;
+        return state2;
     }
 
     ++lc->passed_signals;
@@ -150,8 +150,8 @@ static State state21_handler(State s, Signal sig)
     RENAME(*state_local(s), lc);
 
     if (sig == &state_signal_1) {
-	++lc->handled_signals;
-	return s;
+        ++lc->handled_signals;
+        return s;
     }
 
     ++lc->passed_signals;
@@ -164,8 +164,8 @@ static State state22_handler(State s, Signal sig)
     RENAME(*state_local(s), lc);
 
     if (sig == &state_signal_2) {
-	++lc->handled_signals;
-	return s;
+        ++lc->handled_signals;
+        return s;
     }
 
     ++lc->passed_signals;
@@ -178,13 +178,13 @@ static State state2_handler(State s, Signal sig)
     RENAME(*state_local(s), lc);
 
     if (sig == &state_signal_forward) {
-	++lc->handled_signals;
-	return state1;
+        ++lc->handled_signals;
+        return state1;
     }
 
     if (sig == &state_signal_backward) {
-	++lc->handled_signals;
-	return state1;
+        ++lc->handled_signals;
+        return state1;
     }
 
     ++lc->passed_signals;
@@ -196,7 +196,7 @@ static State state_machine_in(State s, Signal sig)
     NEW0(*(struct state_local **)(state_local(s)));
 
     if (sig == NULL) {
-	return state1;
+        return state1;
     }
 
     return NULL;
@@ -279,10 +279,10 @@ main()
         int arr[6] = {1, 2, 3, 4, 5, 6};
         List l1 = empty_list, l2 = empty_list, l3, l4;
 
-	do { /* test |reverse| */
-	    l1 = _LIST(arr, 6);
-	    reverse(&l1);
-	    
+        do { /* test |reverse| */
+            l1 = _LIST(arr, 6);
+            reverse(&l1);
+            
             do {
                 int i, *np;
 
@@ -292,8 +292,8 @@ main()
                     ++i;
                 }
             } while (0);
-	    free_list(&l1);
-	} while (0);
+            free_list(&l1);
+        } while (0);
 
         do { /* test |append| */
             l1 = _LIST(arr, 3);
@@ -387,7 +387,7 @@ main()
     assert(alloc_count == 0);
 
     do {
-	HashTable tbl = NULL;
+        HashTable tbl = NULL;
         new_string_hash_table(&tbl);
         assert(alloc_count == 3);
 
@@ -532,109 +532,109 @@ main()
     } while (0);
 
     do {
-	Str str = NULL;
-	new_str(&str, "");
-	for (int i = 0; i < 10; ++i) {
-	    static char num[2];
-	    num[0] = '0';
-	    num[0] += i;
-	    str_extend(str, num);
-	}
-	assert(strcmp(raw_string(str), "0123456789") == 0);
-	assert(str_length(str) == 10);
-	free_str(&str);
+        Str str = NULL;
+        new_str(&str, "");
+        for (int i = 0; i < 10; ++i) {
+            static char num[2];
+            num[0] = '0';
+            num[0] += i;
+            str_extend(str, num);
+        }
+        assert(strcmp(raw_string(str), "0123456789") == 0);
+        assert(str_length(str) == 10);
+        free_str(&str);
 
-	new_str(&str, "");
-	for (int i = 0; i < 10; ++i) {
-	    str_extend(str, "Hello");
-	}
-	assert(str_length(str) == 10 * strlen("Hello"));
-	free_str(&str);
+        new_str(&str, "");
+        for (int i = 0; i < 10; ++i) {
+            str_extend(str, "Hello");
+        }
+        assert(str_length(str) == 10 * strlen("Hello"));
+        free_str(&str);
     } while (0);
 
     do { /* test state machine */
-	new_state(&state_machine, root_state, STATE_XOR, NULL);
-	state_register_in_func(state_machine, state_machine_in);
-	state_register_out_func(state_machine, state_out);
+        new_state(&state_machine, root_state, STATE_XOR, NULL);
+        state_register_in_func(state_machine, state_machine_in);
+        state_register_out_func(state_machine, state_out);
 
-	new_state(&state1, state_machine, STATE_XOR, state1_handler);
-	state_register_in_func(state1, state1_in);
-	state_register_out_func(state1, state_out);
+        new_state(&state1, state_machine, STATE_XOR, state1_handler);
+        state_register_in_func(state1, state1_in);
+        state_register_out_func(state1, state_out);
 
-	new_state(&state11, state1, STATE_XOR, state11_handler);
-	state_register_in_func(state11, state_in);
-	state_register_out_func(state11, state_out);
+        new_state(&state11, state1, STATE_XOR, state11_handler);
+        state_register_in_func(state11, state_in);
+        state_register_out_func(state11, state_out);
 
-	new_state(&state12, state1, STATE_XOR, state12_handler);
-	state_register_in_func(state12, state_in);
-	state_register_out_func(state12, state_out);
+        new_state(&state12, state1, STATE_XOR, state12_handler);
+        state_register_in_func(state12, state_in);
+        state_register_out_func(state12, state_out);
 
-	new_state(&state2, state_machine, STATE_AND, state2_handler);
-	state_register_in_func(state2, state_in);
-	state_register_out_func(state2, state_out);
+        new_state(&state2, state_machine, STATE_AND, state2_handler);
+        state_register_in_func(state2, state_in);
+        state_register_out_func(state2, state_out);
 
-	new_state(&state21, state2, STATE_XOR, state21_handler);
-	state_register_in_func(state21, state_in);
-	state_register_out_func(state21, state_out);
+        new_state(&state21, state2, STATE_XOR, state21_handler);
+        state_register_in_func(state21, state_in);
+        state_register_out_func(state21, state_out);
 
-	new_state(&state22, state2, STATE_XOR, state22_handler);
-	state_register_in_func(state22, state_in);
-	state_register_out_func(state22, state_out);
+        new_state(&state22, state2, STATE_XOR, state22_handler);
+        state_register_in_func(state22, state_in);
+        state_register_out_func(state22, state_out);
 
-	int signals_sent = 0;
+        int signals_sent = 0;
 
-	state_init(state_machine);
-	assert(state_active_child(state_machine) == state1);
-	assert(state_active_child(state1) == state11);
+        state_init(state_machine);
+        assert(state_active_child(state_machine) == state1);
+        assert(state_active_child(state1) == state11);
 
-	assert(state_handle_signal(state_machine, &state_signal_forward));
-	signals_sent++;
-	assert(state_active_child(state_machine) == state1);
-	assert(state_active_child(state1) == state12);
+        assert(state_handle_signal(state_machine, &state_signal_forward));
+        signals_sent++;
+        assert(state_active_child(state_machine) == state1);
+        assert(state_active_child(state1) == state12);
 
-	assert(state_handle_signal(state_machine, &state_signal_backward));
-	signals_sent++;
-	assert(state_active_child(state_machine) == state1);
-	assert(state_active_child(state1) == state11);
+        assert(state_handle_signal(state_machine, &state_signal_backward));
+        signals_sent++;
+        assert(state_active_child(state_machine) == state1);
+        assert(state_active_child(state1) == state11);
 
-	assert(state_handle_signal(state_machine, &state_signal_forward));
-	signals_sent++;
-	assert(state_active_child(state_machine) == state1);
-	assert(state_active_child(state1) == state12);
+        assert(state_handle_signal(state_machine, &state_signal_forward));
+        signals_sent++;
+        assert(state_active_child(state_machine) == state1);
+        assert(state_active_child(state1) == state12);
 
-	assert(state_handle_signal(state_machine, &state_signal_forward));
-	signals_sent++;
-	assert(state_active_child(state_machine) == state2);
+        assert(state_handle_signal(state_machine, &state_signal_forward));
+        signals_sent++;
+        assert(state_active_child(state_machine) == state2);
 
-	assert(state_handle_signal(state_machine, &state_signal_1));
-	signals_sent++;
-	assert(state_handle_signal(state_machine, &state_signal_1));
-	signals_sent++;
-	assert(state_handle_signal(state_machine, &state_signal_2));
-	signals_sent++;
+        assert(state_handle_signal(state_machine, &state_signal_1));
+        signals_sent++;
+        assert(state_handle_signal(state_machine, &state_signal_1));
+        signals_sent++;
+        assert(state_handle_signal(state_machine, &state_signal_2));
+        signals_sent++;
 
-	struct state_local *lc;
-	RENAME(*state_local(state21), lc);
-	assert(lc->handled_signals ==  2);
+        struct state_local *lc;
+        RENAME(*state_local(state21), lc);
+        assert(lc->handled_signals ==  2);
 
-	RENAME(*state_local(state22), lc);
-	assert(lc->handled_signals ==  1);
+        RENAME(*state_local(state22), lc);
+        assert(lc->handled_signals ==  1);
 
-	assert(state_handle_signal(state_machine, &state_signal_forward));
-	signals_sent++;
-	assert(state_active_child(state_machine) == state1);
-	assert(state_active_child(state1) == state12);
+        assert(state_handle_signal(state_machine, &state_signal_forward));
+        signals_sent++;
+        assert(state_active_child(state_machine) == state1);
+        assert(state_active_child(state1) == state12);
 
-	state_clear(state_machine);
-	assert(total_handled_signals == signals_sent);
+        state_clear(state_machine);
+        assert(total_handled_signals == signals_sent);
 
-	free_state(&state22);
-	free_state(&state21);
-	free_state(&state2);
-	free_state(&state12);
-	free_state(&state11);
-	free_state(&state1);
-	free_state(&state_machine);
+        free_state(&state22);
+        free_state(&state21);
+        free_state(&state2);
+        free_state(&state12);
+        free_state(&state11);
+        free_state(&state1);
+        free_state(&state_machine);
     } while (0);
 
     assert(alloc_count == 0);

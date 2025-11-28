@@ -207,10 +207,10 @@ reverse(List *l_r)
     ll = empty_list;
 
     while (l != empty_list) {
-	List l_t = l->rest;
-	l->rest = ll;
-	ll = l;
-	l = l_t;
+        List l_t = l->rest;
+        l->rest = ll;
+        ll = l;
+        l = l_t;
     }
 
     *l_r = ll;
