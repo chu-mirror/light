@@ -59,7 +59,7 @@ into_state(State s, Signal sig)
     }
     if (s->type == STATE_AND) {
         State cld;
-        FOREACH(cld, s->children) {
+        FOREACH (cld, s->children) {
             into_state(cld, sig);
         }
     }
@@ -73,7 +73,7 @@ out_state(State s, Signal sig)
     }
     if (s->type == STATE_AND) {
         State cld;
-        FOREACH(cld, s->children) {
+        FOREACH (cld, s->children) {
             out_state(cld, sig);
         }
     }
@@ -109,11 +109,8 @@ state_handle_signal(State s, Signal sig)
         }
         if (s->type == STATE_AND) {
             State cld;
-            FOREACH(cld, s->children) {
-                handled = state_handle_signal(cld, sig);
-                if (handled) {
-                    break;
-                }
+            FOREACH (cld, s->children) {
+                handled = state_handle_signal(cld, sig) || handled;
             }
         }
     } else {
@@ -135,8 +132,16 @@ state_local(State s)
     return &s->local;
 }
 
-State
-state_active_child(State s)
+bool
+state_is_active(State s)
 {
-    return s->active_child;
+    State _s = s;
+
+    while (_s->parent) {
+        if (_s->parent->type == STATE_XOR && _s->parent->active_child != _s) {
+            return false;
+        }
+        _s = _s->parent;
+    }
+    return true;
 }

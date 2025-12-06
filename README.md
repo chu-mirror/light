@@ -13,4 +13,3 @@ Current support:
 - deque;
 - resizable string;
 - state machine(a subset of [Harel 1987]).
-

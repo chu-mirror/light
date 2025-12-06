@@ -72,13 +72,15 @@ State current_state;
 
 int total_handled_signals;
 
-static State state_in(State s, Signal sig)
+static State
+state_in(State s, Signal sig)
 {
     NEW0(*(struct state_local **)(state_local(s)));
     return NULL;
 }
 
-static State state_out(State s, Signal sig)
+static State
+state_out(State s, Signal sig)
 {
     struct state_local *lc;
     RENAME(*state_local(s), lc);
@@ -87,7 +89,8 @@ static State state_out(State s, Signal sig)
     return NULL;
 }
 
-static State state11_handler(State s, Signal sig)
+static State
+state11_handler(State s, Signal sig)
 {
     struct state_local *lc;
     RENAME(*state_local(s), lc);
@@ -100,7 +103,8 @@ static State state11_handler(State s, Signal sig)
     return NULL;
 }
 
-static State state12_handler(State s, Signal sig)
+static State
+state12_handler(State s, Signal sig)
 {
     struct state_local *lc;
     RENAME(*state_local(s), lc);
@@ -114,7 +118,8 @@ static State state12_handler(State s, Signal sig)
     return NULL;
 }
 
-static State state1_in(State s, Signal sig)
+static State
+state1_in(State s, Signal sig)
 {
     NEW0(*(struct state_local **)(state_local(s)));
 
@@ -125,17 +130,18 @@ static State state1_in(State s, Signal sig)
     return NULL;
 }
 
-static State state1_handler(State s, Signal sig)
+static State
+state1_handler(State s, Signal sig)
 {
     struct state_local *lc;
     RENAME(*state_local(s), lc);
 
-    if (sig == &state_signal_forward && state_active_child(s) == state12) {
+    if (sig == &state_signal_forward && state_is_active(state12)) {
         ++lc->handled_signals;
         return state2;
     }
 
-    if (sig == &state_signal_backward && state_active_child(s) == state11) {
+    if (sig == &state_signal_backward && state_is_active(state11)) {
         ++lc->handled_signals;
         return state2;
     }
@@ -144,7 +150,8 @@ static State state1_handler(State s, Signal sig)
     return NULL;
 }
 
-static State state21_handler(State s, Signal sig)
+static State
+state21_handler(State s, Signal sig)
 {
     struct state_local *lc;
     RENAME(*state_local(s), lc);
@@ -158,7 +165,8 @@ static State state21_handler(State s, Signal sig)
     return NULL;
 }
 
-static State state22_handler(State s, Signal sig)
+static State
+state22_handler(State s, Signal sig)
 {
     struct state_local *lc;
     RENAME(*state_local(s), lc);
@@ -172,7 +180,8 @@ static State state22_handler(State s, Signal sig)
     return NULL;
 }
 
-static State state2_handler(State s, Signal sig)
+static State
+state2_handler(State s, Signal sig)
 {
     struct state_local *lc;
     RENAME(*state_local(s), lc);
@@ -191,7 +200,8 @@ static State state2_handler(State s, Signal sig)
     return NULL;
 }
 
-static State state_machine_in(State s, Signal sig)
+static State
+state_machine_in(State s, Signal sig)
 {
     NEW0(*(struct state_local **)(state_local(s)));
 
@@ -286,13 +296,13 @@ main()
         do { /* test |reverse| */
             l1 = _LIST(arr, 6);
             reverse(&l1);
-            
+
             do {
                 int i, *np;
 
                 i = 0;
                 FOREACH (np, l1) {
-                    assert(*np == 6-i);
+                    assert(*np == 6 - i);
                     ++i;
                 }
             } while (0);
@@ -588,27 +598,23 @@ main()
         int signals_sent = 0;
 
         state_init(state_machine);
-        assert(state_active_child(state_machine) == state1);
-        assert(state_active_child(state1) == state11);
+        assert(state_is_active(state11));
 
         assert(state_handle_signal(state_machine, &state_signal_forward));
         signals_sent++;
-        assert(state_active_child(state_machine) == state1);
-        assert(state_active_child(state1) == state12);
+        assert(state_is_active(state12));
 
         assert(state_handle_signal(state_machine, &state_signal_backward));
         signals_sent++;
-        assert(state_active_child(state_machine) == state1);
-        assert(state_active_child(state1) == state11);
+        assert(state_is_active(state11));
 
         assert(state_handle_signal(state_machine, &state_signal_forward));
         signals_sent++;
-        assert(state_active_child(state_machine) == state1);
-        assert(state_active_child(state1) == state12);
+        assert(state_is_active(state12));
 
         assert(state_handle_signal(state_machine, &state_signal_forward));
         signals_sent++;
-        assert(state_active_child(state_machine) == state2);
+        assert(state_is_active(state2));
 
         assert(state_handle_signal(state_machine, &state_signal_1));
         signals_sent++;
@@ -619,15 +625,14 @@ main()
 
         struct state_local *lc;
         RENAME(*state_local(state21), lc);
-        assert(lc->handled_signals ==  2);
+        assert(lc->handled_signals == 2);
 
         RENAME(*state_local(state22), lc);
-        assert(lc->handled_signals ==  1);
+        assert(lc->handled_signals == 1);
 
         assert(state_handle_signal(state_machine, &state_signal_forward));
         signals_sent++;
-        assert(state_active_child(state_machine) == state1);
-        assert(state_active_child(state1) == state12);
+        assert(state_is_active(state12));
 
         state_clear(state_machine);
         assert(total_handled_signals == signals_sent);

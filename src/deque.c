@@ -156,5 +156,5 @@ nth_of_deque(Deque q, int n)
 void *
 last_value_of_deque(Deque q)
 {
-    return *nth_of_deque(q, used_slots(q)-1);
+    return *nth_of_deque(q, used_slots(q) - 1);
 }

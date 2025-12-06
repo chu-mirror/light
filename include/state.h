@@ -6,10 +6,7 @@
 typedef void *Signal;
 typedef struct state *State;
 
-typedef enum {
-    STATE_XOR,
-    STATE_AND
-} StateType;
+typedef enum { STATE_XOR, STATE_AND } StateType;
 
 #define root_state NULL
 
@@ -21,6 +18,6 @@ void state_init(State s);
 void state_clear(State s);
 bool state_handle_signal(State s, Signal sig);
 void **state_local(State s);
-State state_active_child(State s);
+bool state_is_active(State s);
 
 #endif

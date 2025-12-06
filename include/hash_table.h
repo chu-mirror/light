@@ -8,7 +8,11 @@
 
 typedef struct hash_table *HashTable;
 
-void new_hash_table(HashTable *tbl_r, uint32_t hf(const void *), int eq(const void *, const void *));
+void new_hash_table(
+    HashTable *tbl_r,
+    uint32_t hf(const void *),
+    int eq(const void *, const void *)
+);
 void new_string_hash_table(HashTable *tbl_r);
 void free_hash_table(HashTable *tbl_r);
 List get_all_records_from_hash_table(HashTable tbl);

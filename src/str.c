@@ -31,13 +31,11 @@ free_str(Str *str_r)
     FREE(*str_r);
 }
 
-
 char *
 raw_string(Str str)
 {
     return str->raw_string;
 }
-
 
 int
 str_length(Str str)

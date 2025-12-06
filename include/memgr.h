@@ -7,11 +7,14 @@
 
 extern size_t alloc_count;
 
-#define NEW(p) (++alloc_count, assert((p) == NULL), (p) = (typeof(p))malloc(sizeof *(p)))
+#define NEW(p) \
+    (++alloc_count, assert((p) == NULL), (p) = (typeof(p))malloc(sizeof *(p)))
 #define NEW_(p) ((p) = malloc(sizeof *(p)))
 
-#define CALLOC(p, len)                                           \
-    (++alloc_count, assert((p) == NULL), (p) = (typeof(p))calloc((len), sizeof *(p)))
+#define CALLOC(p, len)                            \
+    (++alloc_count,                               \
+     assert((p) == NULL),                         \
+     (p) = (typeof(p))calloc((len), sizeof *(p)))
 #define CALLOC_(p, len) ((p) = (typeof(p))calloc((len), sizeof *(p)))
 
 #define NEW0(p) CALLOC((p), 1)
@@ -25,7 +28,7 @@ extern size_t alloc_count;
     ((p) = (typeof(p))reallocarray((p), sizeof *(p), len))
 
 #define MOVE(src, dest) (NEW(dest), memcpy((dest), (src), sizeof *(src)))
-#define MOVE_ARRAY(src, dest, n)                                   \
+#define MOVE_ARRAY(src, dest, n)                                  \
     (CALLOC(dest, n), memcpy((dest), (src), sizeof *(src) * (n)))
 
 #endif

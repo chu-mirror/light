@@ -49,7 +49,11 @@ equal_to_the_records_reference_FUNC(void *rcds_r)
 }
 
 void
-new_hash_table(HashTable *tbl_r, uint32_t hf(const void *), int eq(const void *, const void *))
+new_hash_table(
+    HashTable *tbl_r,
+    uint32_t hf(const void *),
+    int eq(const void *, const void *)
+)
 {
     NEW0(*tbl_r);
     new_array(&(*tbl_r)->table);

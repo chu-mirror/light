@@ -18,6 +18,7 @@
 
 #define SIGN(v) (((v) > 0) - ((v) < 0))
 #define ABS(v) ((v) * SIGN(v))
-#define BETWEEN(v, l, r) ((((l) <= (v)) && ((v) < (r))) || (((r) <= (v)) && ((v) < (l))))
+#define BETWEEN(v, l, r)                                             \
+    ((((l) <= (v)) && ((v) < (r))) || (((r) <= (v)) && ((v) < (l))))
 
 #endif
