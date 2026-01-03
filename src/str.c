@@ -63,3 +63,10 @@ str_append(Str str, char c)
     char s[2] = {c, '\0'};
     str_extend(str, s);
 }
+
+void
+str_clean(Str str)
+{
+    str->len = 0;
+    str->raw_string[0] = '\0';
+}
