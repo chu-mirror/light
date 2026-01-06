@@ -429,7 +429,7 @@ main()
 
     assert_memory_safety();
 
-    do {
+    KEEP(do {
         AssocTable tbl = NULL;
         new_assoc_table(&tbl, equal_func_str);
         assert(alloc_count - reserved_count == 1);
@@ -455,7 +455,7 @@ main()
         assert(get_from_assoc_table(tbl, "Chu") == NULL);
         assert(alloc_count - reserved_count == 3);
         free_assoc_table(&tbl);
-    } while (0);
+    } while (0));
 
     do {
         char *str1 = NULL, *str2 = NULL;

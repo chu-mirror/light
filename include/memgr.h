@@ -14,7 +14,12 @@ extern size_t reserved_count;
         stat;                                         \
         reserved_count += alloc_count - _alloc_count; \
     } while (0)
-
+#define KEEP(stat)                                    \
+    do {                                              \
+        size_t diff = alloc_count - reserved_count;   \
+        stat;                                         \
+        assert(diff == alloc_count - reserved_count); \
+    } while (0)
 #define assert_memory_safety() assert(alloc_count == reserved_count)
 
 #define NEW(p) \
