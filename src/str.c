@@ -12,16 +12,12 @@ struct str {
 };
 
 void
-new_str(Str *str_r, char *s)
+new_str(Str *str_r)
 {
     NEW0(*str_r);
-    (*str_r)->len = strlen(s);
+    (*str_r)->len = 0;
     (*str_r)->mem_size = INITIAL_MEM_SIZE;
-    while ((*str_r)->mem_size < (*str_r)->len + 1) {
-        (*str_r)->mem_size <<= 1;
-    }
     CALLOC((*str_r)->raw_string, (*str_r)->mem_size);
-    strcpy((*str_r)->raw_string, s);
 }
 
 void

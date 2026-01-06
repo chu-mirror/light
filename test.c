@@ -226,7 +226,6 @@ main()
         FREE(hello);
         assert(hello == NULL);
     } while (0);
-    assert(alloc_count == 0);
 
     do {
         char str[] = "HASHED STRING";
@@ -253,7 +252,7 @@ main()
         FREE(fr);
     } while (0);
     assert(closure_count == 0);
-    assert(alloc_count == 0);
+    assert_memory_safety();
 
     do { /* allocation of closures */
 #define NUMBER_OF_CLOSURES 3000
@@ -287,7 +286,7 @@ main()
     } while (0);
     assert(closure_count == 0);
     assert(closure_count == number_of_closures());
-    assert(alloc_count == 0);
+    assert_memory_safety();
 
     do {
         int arr[6] = {1, 2, 3, 4, 5, 6};
@@ -390,7 +389,7 @@ main()
         } while (0);
 
         free_list(&l3);
-        assert(alloc_count == 6);
+        assert(alloc_count - reserved_count == 6);
         free_list(&l4);
 
         assert(is_empty_list(l1));
@@ -398,18 +397,18 @@ main()
         assert(is_empty_list(l3));
     } while (0);
 
-    assert(alloc_count == 0);
+    assert_memory_safety();
 
     do {
         HashTable tbl = NULL;
         new_string_hash_table(&tbl);
-        assert(alloc_count == 3);
+        assert(alloc_count - reserved_count == 3);
 
         put_to_hash_table(tbl, "Chu", "Hello");
-        assert(alloc_count == 6);
+        assert(alloc_count - reserved_count == 6);
 
         put_to_hash_table(tbl, "Mzz", "Welcome");
-        assert(alloc_count == 9);
+        assert(alloc_count - reserved_count == 9);
 
         assert(strcmp((char *)get_from_hash_table(tbl, "Chu"), "Hello") == 0);
         assert(
@@ -420,26 +419,26 @@ main()
         assert(
             strcmp((char *)get_from_hash_table(tbl, "Chu"), "Welcome") == 0
         );
-        assert(alloc_count == 9);
+        assert(alloc_count - reserved_count == 9);
 
         remove_from_hash_table(tbl, "Chu");
         assert(get_from_hash_table(tbl, "Chu") == NULL);
-        assert(alloc_count == 6);
+        assert(alloc_count - reserved_count == 6);
         free_hash_table(&tbl);
     } while (0);
 
-    assert(alloc_count == 0);
+    assert_memory_safety();
 
     do {
         AssocTable tbl = NULL;
         new_assoc_table(&tbl, equal_func_str);
-        assert(alloc_count == 1);
+        assert(alloc_count - reserved_count == 1);
 
         put_to_assoc_table(tbl, "Chu", "Hello");
-        assert(alloc_count == 3);
+        assert(alloc_count - reserved_count == 3);
 
         put_to_assoc_table(tbl, "Mzz", "Welcome");
-        assert(alloc_count == 5);
+        assert(alloc_count - reserved_count == 5);
 
         assert(strcmp((char *)get_from_assoc_table(tbl, "Chu"), "Hello") == 0);
         assert(
@@ -450,11 +449,11 @@ main()
         assert(
             strcmp((char *)get_from_assoc_table(tbl, "Chu"), "Welcome") == 0
         );
-        assert(alloc_count == 5);
+        assert(alloc_count - reserved_count == 5);
 
         remove_from_assoc_table(tbl, "Chu");
         assert(get_from_assoc_table(tbl, "Chu") == NULL);
-        assert(alloc_count == 3);
+        assert(alloc_count - reserved_count == 3);
         free_assoc_table(&tbl);
     } while (0);
 
@@ -547,7 +546,7 @@ main()
 
     do {
         Str str = NULL;
-        new_str(&str, "");
+        new_str(&str);
         for (int i = 0; i < 10; ++i) {
             static char num[2];
             num[0] = '0';
@@ -558,7 +557,7 @@ main()
         assert(str_length(str) == 10);
         free_str(&str);
 
-        new_str(&str, "");
+        new_str(&str);
         for (int i = 0; i < 10; ++i) {
             str_extend(str, "Hello");
         }
@@ -646,8 +645,8 @@ main()
         free_state(&state_machine);
     } while (0);
 
-    assert(alloc_count == 0);
     assert(closure_count == 0);
+    assert_memory_safety();
 
     printf("Passed all tests\n");
     return 0;

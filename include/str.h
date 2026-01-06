@@ -3,7 +3,7 @@
 
 typedef struct str *Str;
 
-void new_str(Str *str_r, char *s);
+void new_str(Str *str_r);
 void free_str(Str *str_r);
 char *raw_string(Str str);
 int str_length(Str str);
