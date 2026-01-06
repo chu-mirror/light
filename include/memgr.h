@@ -8,6 +8,13 @@
 extern size_t alloc_count;
 extern size_t reserved_count;
 
+#define RESERVE(stat)                                 \
+    do {                                              \
+        size_t _alloc_count = alloc_count;            \
+        stat;                                         \
+        reserved_count += alloc_count - _alloc_count; \
+    } while (0)
+
 #define assert_memory_safety() assert(alloc_count == reserved_count)
 
 #define NEW(p) \

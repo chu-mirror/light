@@ -124,10 +124,8 @@ alloc_closure(void)
     Closure ncl; /* new closure */
     do { /* allocate memory if not enough */
         if (closure_pool.size == 0) {
-            CALLOC(closure_pool.closures, CLOSURE_POOL_INIT_SIZE);
-            ++reserved_count;
-            CALLOC(closure_pool.label, CLOSURE_POOL_INIT_SIZE << 1);
-            ++reserved_count;
+            RESERVE(CALLOC(closure_pool.closures, CLOSURE_POOL_INIT_SIZE));
+            RESERVE(CALLOC(closure_pool.label, CLOSURE_POOL_INIT_SIZE << 1));
             closure_pool.size = CLOSURE_POOL_INIT_SIZE;
             closure_pool.bases[closure_pool.next_base++] =
                 closure_pool.closures;
@@ -137,8 +135,7 @@ alloc_closure(void)
             /* Do not free memory here to keep the space from being reused for
              * other purposes. */
             closure_pool.closures = NULL;
-            CALLOC(closure_pool.closures, closure_pool.size);
-            ++reserved_count;
+            RESERVE(CALLOC(closure_pool.closures, closure_pool.size));
             closure_pool.bases[closure_pool.next_base++] =
                 closure_pool.closures;
 
