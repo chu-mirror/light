@@ -11,14 +11,15 @@ extern size_t _light_alloc_count;
 extern size_t _light_reserved_count;
 extern bool _light_reserving;
 
-#define RESERVE(stat)                                               \
-    do {                                                            \
-        size_t _alloc_count = _light_alloc_count;                   \
-        assert(!_light_reserving);                                  \
-        _light_reserving = true;                                    \
-        stat;                                                       \
-        _light_reserving = false;                                   \
-        _light_reserved_count += _light_alloc_count - _alloc_count; \
+#define RESERVE(stat)                                                \
+    do {                                                             \
+        size_t _alloc_count = _light_alloc_count;                    \
+        bool _prev_reserving = _light_reserving;                     \
+        _light_reserving = true;                                     \
+        stat;                                                        \
+        _light_reserved_count +=                                     \
+            _prev_reserving ? 0 : _light_alloc_count - _alloc_count; \
+        _light_reserving = _prev_reserving;                          \
     } while (0)
 #define KEEP(stat)                                                  \
     do {                                                            \
