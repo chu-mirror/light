@@ -11,20 +11,24 @@ extern size_t _light_alloc_count;
 extern size_t _light_reserved_count;
 extern bool _light_reserving;
 
-#define RESERVE(stat)                                                \
+#define RESERVE(...)                                                 \
     do {                                                             \
         size_t _alloc_count = _light_alloc_count;                    \
         bool _prev_reserving = _light_reserving;                     \
         _light_reserving = true;                                     \
-        stat;                                                        \
+        do {                                                         \
+            __VA_ARGS__;                                             \
+        } while (0);                                                 \
         _light_reserved_count +=                                     \
             _prev_reserving ? 0 : _light_alloc_count - _alloc_count; \
         _light_reserving = _prev_reserving;                          \
     } while (0)
-#define KEEP(stat)                                                  \
+#define KEEP(...)                                                   \
     do {                                                            \
         size_t diff = _light_alloc_count - _light_reserved_count;   \
-        stat;                                                       \
+        do {                                                        \
+            __VA_ARGS__;                                            \
+        } while (0);                                                \
         assert(diff == _light_alloc_count - _light_reserved_count); \
     } while (0)
 #define assert_memory_safety()                          \
