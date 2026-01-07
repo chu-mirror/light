@@ -389,7 +389,7 @@ main()
         } while (0);
 
         free_list(&l3);
-        assert(alloc_count - reserved_count == 6);
+        assert(_light_alloc_count - _light_reserved_count == 6);
         free_list(&l4);
 
         assert(is_empty_list(l1));
@@ -402,13 +402,13 @@ main()
     do {
         HashTable tbl = NULL;
         new_string_hash_table(&tbl);
-        assert(alloc_count - reserved_count == 3);
+        assert(_light_alloc_count - _light_reserved_count == 3);
 
         put_to_hash_table(tbl, "Chu", "Hello");
-        assert(alloc_count - reserved_count == 6);
+        assert(_light_alloc_count - _light_reserved_count == 6);
 
         put_to_hash_table(tbl, "Mzz", "Welcome");
-        assert(alloc_count - reserved_count == 9);
+        assert(_light_alloc_count - _light_reserved_count == 9);
 
         assert(strcmp((char *)get_from_hash_table(tbl, "Chu"), "Hello") == 0);
         assert(
@@ -419,11 +419,11 @@ main()
         assert(
             strcmp((char *)get_from_hash_table(tbl, "Chu"), "Welcome") == 0
         );
-        assert(alloc_count - reserved_count == 9);
+        assert(_light_alloc_count - _light_reserved_count == 9);
 
         remove_from_hash_table(tbl, "Chu");
         assert(get_from_hash_table(tbl, "Chu") == NULL);
-        assert(alloc_count - reserved_count == 6);
+        assert(_light_alloc_count - _light_reserved_count == 6);
         free_hash_table(&tbl);
     } while (0);
 
@@ -432,13 +432,13 @@ main()
     KEEP(do {
         AssocTable tbl = NULL;
         new_assoc_table(&tbl, equal_func_str);
-        assert(alloc_count - reserved_count == 1);
+        assert(_light_alloc_count - _light_reserved_count == 1);
 
         put_to_assoc_table(tbl, "Chu", "Hello");
-        assert(alloc_count - reserved_count == 3);
+        assert(_light_alloc_count - _light_reserved_count == 3);
 
         put_to_assoc_table(tbl, "Mzz", "Welcome");
-        assert(alloc_count - reserved_count == 5);
+        assert(_light_alloc_count - _light_reserved_count == 5);
 
         assert(strcmp((char *)get_from_assoc_table(tbl, "Chu"), "Hello") == 0);
         assert(
@@ -449,11 +449,11 @@ main()
         assert(
             strcmp((char *)get_from_assoc_table(tbl, "Chu"), "Welcome") == 0
         );
-        assert(alloc_count - reserved_count == 5);
+        assert(_light_alloc_count - _light_reserved_count == 5);
 
         remove_from_assoc_table(tbl, "Chu");
         assert(get_from_assoc_table(tbl, "Chu") == NULL);
-        assert(alloc_count - reserved_count == 3);
+        assert(_light_alloc_count - _light_reserved_count == 3);
         free_assoc_table(&tbl);
     } while (0));
 
@@ -468,14 +468,14 @@ main()
         do {
             size_t c;
             free_atom_str(str1);
-            c = alloc_count;
+            c = _light_alloc_count;
             free_atom_str(str2);
-            assert(c == alloc_count);
+            assert(c == _light_alloc_count);
 
             atom_str(str1);
-            c = alloc_count;
+            c = _light_alloc_count;
             atom_str(str2);
-            assert(c == alloc_count);
+            assert(c == _light_alloc_count);
         } while (0);
         FREE(str1);
         FREE(str2);
