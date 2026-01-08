@@ -228,6 +228,29 @@ main()
     } while (0);
 
     do {
+        int *a = NULL, *b = NULL;
+        KEEP(RESERVE(NEW(a);););
+        free(a);
+        a = NULL;
+        _light_alloc_count = _light_reserved_count = 0;
+        RESERVE(NEW(a); KEEP(RESERVE(NEW(b););););
+        free(a);
+        free(b);
+        a = b = NULL;
+        _light_alloc_count = _light_reserved_count = 0;
+        KEEP(RESERVE(NEW(a); RESERVE(NEW(b););););
+        free(a);
+        free(b);
+        a = b = NULL;
+        _light_alloc_count = _light_reserved_count = 0;
+        KEEP(RESERVE(RESERVE(NEW(a);); RESERVE(NEW(b););););
+        free(a);
+        free(b);
+        a = b = NULL;
+        _light_alloc_count = _light_reserved_count = 0;
+    } while (0);
+
+    do {
         char str[] = "HASHED STRING";
         assert(hash_str(str) == 0xCD0CDDA4);
     } while (0);
