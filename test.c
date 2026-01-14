@@ -213,10 +213,18 @@ state_machine_in(State s, Signal sig)
 }
 
 void
-encapsulated_reserve()
+encapsulated_reserve_()
 {
     int *s = NULL;
     RESERVE(NEW(s));
+    free(s);
+}
+
+void
+encapsulated_reserve()
+{
+    int *s = NULL;
+    RESERVE(NEW(s); encapsulated_reserve_());
     free(s);
 }
 
@@ -237,24 +245,30 @@ main()
 
     do {
         int *a = NULL, *b = NULL;
-        KEEP(RESERVE(NEW(a);););
+        KEEP(RESERVE(NEW(a)));
         free(a);
         a = NULL;
         _light_alloc_count = _light_reserved_count = 0;
-        RESERVE(NEW(a); KEEP(RESERVE(NEW(b););););
+        RESERVE(NEW(a); KEEP(RESERVE(NEW(b))));
         free(a);
         free(b);
         a = b = NULL;
         _light_alloc_count = _light_reserved_count = 0;
-        KEEP(RESERVE(NEW(a); RESERVE(NEW(b););););
+        KEEP(RESERVE(RESERVE(NEW(a); RESERVE(NEW(b)))));
         free(a);
         free(b);
         a = b = NULL;
         _light_alloc_count = _light_reserved_count = 0;
-        KEEP(RESERVE(RESERVE(NEW(a);); RESERVE(NEW(b););););
+        KEEP(RESERVE(NEW(a); RESERVE(NEW(b))));
         free(a);
         free(b);
         a = b = NULL;
+        _light_alloc_count = _light_reserved_count = 0;
+        KEEP(RESERVE(RESERVE(NEW(a)); RESERVE(NEW(b))));
+        free(a);
+        free(b);
+        a = b = NULL;
+        _light_alloc_count = _light_reserved_count = 0;
         KEEP(RESERVE(encapsulated_reserve()));
         _light_alloc_count = _light_reserved_count = 0;
     } while (0);
