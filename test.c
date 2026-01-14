@@ -212,6 +212,14 @@ state_machine_in(State s, Signal sig)
     return NULL;
 }
 
+void
+encapsulated_reserve()
+{
+    int *s = NULL;
+    RESERVE(NEW(s));
+    free(s);
+}
+
 int
 main()
 {
@@ -247,6 +255,7 @@ main()
         free(a);
         free(b);
         a = b = NULL;
+        KEEP(RESERVE(encapsulated_reserve()));
         _light_alloc_count = _light_reserved_count = 0;
     } while (0);
 

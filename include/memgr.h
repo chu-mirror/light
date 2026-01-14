@@ -12,27 +12,31 @@ extern size_t _light_reserved_count;
 extern bool _light_reserving;
 extern size_t _light_doubled_reserved_count;
 extern size_t _doubled_count;
+extern size_t *const _light_global_doubled_count_r;
 
-#define RESERVE(...)                                                \
-    do {                                                            \
-        do {                                                        \
-            size_t _alloc_count = _light_alloc_count;               \
-            size_t _doubled_count = 0;                              \
-            size_t _actual_reserved_count = 0;                      \
-            bool _prev_reserving = _light_reserving;                \
-            _light_reserving = true;                                \
-            do {                                                    \
-                __VA_ARGS__;                                        \
-            } while (0);                                            \
-            _light_reserving = _prev_reserving;                     \
-            _actual_reserved_count =                                \
-                _light_alloc_count - _alloc_count - _doubled_count; \
-            _light_reserved_count += _actual_reserved_count;        \
-            _light_doubled_reserved_count =                         \
-                _light_reserving ? _actual_reserved_count : 0;      \
-        } while (0);                                                \
-        _doubled_count += _light_doubled_reserved_count;            \
+#define RESERVE(...)                                                   \
+    do {                                                               \
+        do {                                                           \
+            size_t _alloc_count = _light_alloc_count;                  \
+            size_t _doubled_count = 0;                                 \
+            size_t _actual_reserved_count = 0;                         \
+            bool _prev_reserving = _light_reserving;                   \
+            _light_reserving = true;                                   \
+            do {                                                       \
+                __VA_ARGS__;                                           \
+            } while (0);                                               \
+            _light_reserving = _prev_reserving;                        \
+            _actual_reserved_count = _light_alloc_count - _alloc_count \
+                                     - _doubled_count                  \
+                                     - *_light_global_doubled_count_r; \
+            *_light_global_doubled_count_r = 0;                        \
+            _light_reserved_count += _actual_reserved_count;           \
+            _light_doubled_reserved_count =                            \
+                _light_reserving ? _actual_reserved_count : 0;         \
+        } while (0);                                                   \
+        _doubled_count += _light_doubled_reserved_count;               \
     } while (0)
+
 #define KEEP(...)                                                   \
     do {                                                            \
         size_t diff = _light_alloc_count - _light_reserved_count;   \
@@ -41,6 +45,7 @@ extern size_t _doubled_count;
         } while (0);                                                \
         assert(diff == _light_alloc_count - _light_reserved_count); \
     } while (0)
+
 #define assert_memory_safety()                          \
     assert(_light_alloc_count == _light_reserved_count)
 
