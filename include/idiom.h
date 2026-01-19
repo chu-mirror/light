@@ -20,5 +20,11 @@
 #define ABS(v) ((v) * SIGN(v))
 #define BETWEEN(v, l, r)                                             \
     ((((l) <= (v)) && ((v) < (r))) || (((r) <= (v)) && ((v) < (l))))
+#define SWAP(a, b)    \
+    do {              \
+        int a_ = (a); \
+        a = (b);      \
+        b = a_;       \
+    } while (0)
 
 #endif
