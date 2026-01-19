@@ -20,11 +20,12 @@
 #define ABS(v) ((v) * SIGN(v))
 #define BETWEEN(v, l, r)                                             \
     ((((l) <= (v)) && ((v) < (r))) || (((r) <= (v)) && ((v) < (l))))
-#define SWAP(a, b)    \
-    do {              \
-        int a_ = (a); \
-        a = (b);      \
-        b = a_;       \
+#define SWAP(a, b)                             \
+    do {                                       \
+        typeof(a) *a_r = &(a), *b_r = &(b), t; \
+        t = *a_r;                              \
+        *a_r = *b_r;                           \
+        *b_r = t;                              \
     } while (0)
 
 #endif

@@ -239,6 +239,12 @@ main()
         "Testing version %d.%02d\n", LIGHT_VERSION / 100, LIGHT_VERSION % 100
     );
     do {
+        int a = 1, b = 2;
+        SWAP(a, b);
+        assert(a == 2);
+        assert(b == 1);
+    } while (0);
+    do {
         char(*hello)[6] = NULL;
         NEW0(hello);
         assert(hello != NULL);
