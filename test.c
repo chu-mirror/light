@@ -1,8 +1,11 @@
 /* #define NDEBUG */
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
+#include <unistd.h>
+#include <sys/mman.h>
 
 #include "light.h"
 #include "list.h"
@@ -13,6 +16,7 @@
 #include "deque.h"
 #include "str.h"
 #include "state.h"
+#include "fileio.h"
 
 struct inc1_frame {
     int *n_r;
@@ -689,6 +693,31 @@ main()
         free_state(&state11);
         free_state(&state1);
         free_state(&state_machine);
+    } while (0);
+
+    do {
+        Str s = NULL;
+        int fd1, fd2;
+
+        new_str(&s);
+        fd1 = memfd_create("file1", 0);
+        fd2 = memfd_create("file2", 0);
+
+        str_extend(s, "Hello");
+        fileio_write_str(fd1, s);
+
+        lseek(fd1, 0, SEEK_SET);
+        fileio_copy_file(fd2, fd1);
+
+        str_clean(s);
+        lseek(fd2, 0, SEEK_SET);
+        fileio_read_str(fd2, s);
+
+        assert(strcmp(raw_string(s), "Hello") == 0);
+
+        close(fd1);
+        close(fd2);
+        free_str(&s);
     } while (0);
 
     assert(closure_count == 0);

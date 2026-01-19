@@ -21,6 +21,7 @@ definition_is_in = [
         "deque",
         "str",
         "state",
+        "fileio",
     ]
 ] + [
     ("hash_table.h", "array.c"),
