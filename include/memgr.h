@@ -74,8 +74,8 @@ extern struct light_reserving_frame *_light_current_reserving_frame;
     ((void)(assert((dest) == NULL)), \
      ++_light_alloc_count,           \
      (dest) = strdup(src))
-#define MOVE(src, dest) (NEW(dest), memcpy((dest), (src), sizeof *(src)))
-#define MOVE_ARRAY(src, dest, n)                                  \
-    (CALLOC(dest, n), memcpy((dest), (src), sizeof *(src) * (n)))
+#define MOVE(src, dest) (NEW(dest), memcpy((dest), (src), sizeof *(dest)))
+#define MOVE_ARRAY(src, dest, n)                                   \
+    (CALLOC(dest, n), memcpy((dest), (src), sizeof *(dest) * (n)))
 
 #endif
