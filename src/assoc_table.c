@@ -31,6 +31,18 @@ new_assoc_table(AssocTable *tbl_r, int eq(const void *, const void *))
     (*tbl_r)->equal_func = eq;
 }
 
+static int
+equal_func_reference(const void *r1, const void *r2)
+{
+    return r1 == r2;
+}
+
+void
+new_reference_assoc_table(AssocTable *tbl_r)
+{
+    new_assoc_table(tbl_r, equal_func_reference);
+}
+
 void
 free_assoc_table(AssocTable *tbl_r)
 {

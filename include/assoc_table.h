@@ -4,6 +4,7 @@
 typedef struct assoc_table *AssocTable;
 
 void new_assoc_table(AssocTable *tbl_r, int eq(const void *, const void *));
+void new_reference_assoc_table(AssocTable *tbl_r);
 void free_assoc_table(AssocTable *tbl_r);
 
 void *get_from_assoc_table(AssocTable tbl, const void *key);
