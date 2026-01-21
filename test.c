@@ -521,6 +521,7 @@ main()
         strcpy(str2, "Hello");
         assert(str1 != str2);
         assert(atom_str(str1) == atom_str(str2));
+        assert(strcmp(atom_str(str1), "Hello") == 0);
         do {
             size_t c;
             free_atom_str(str1);

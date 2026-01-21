@@ -65,7 +65,7 @@ void
 free_atom(const uint8_t *blk, size_t len)
 {
     struct atom *a_r, a;
-    uint8_t *_blk;
+    uint8_t *_blk = NULL;
 
     if (atoms == NULL) {
         return;
@@ -99,10 +99,12 @@ clear_atoms()
     free_list(&rcd_r_s);
 }
 
-void *
+const char *
 atom_str(const char *str)
 {
-    return atom((const uint8_t *)str, strlen(str));
+    struct atom *a_r;
+    RENAME(atom((const uint8_t *)str, strlen(str) + 1), a_r);
+    return (const char *)(a_r->block);
 }
 
 void
