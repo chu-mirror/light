@@ -70,6 +70,10 @@ extern struct light_reserving_frame *_light_current_reserving_frame;
 #define REALLOC_ARRAY(p, len)                              \
     ((p) = (typeof(p))reallocarray((p), sizeof *(p), len))
 
+#define STRDUP(src, dest)            \
+    ((void)(assert((dest) == NULL)), \
+     ++_light_alloc_count,           \
+     (dest) = strdup(src))
 #define MOVE(src, dest) (NEW(dest), memcpy((dest), (src), sizeof *(src)))
 #define MOVE_ARRAY(src, dest, n)                                  \
     (CALLOC(dest, n), memcpy((dest), (src), sizeof *(src) * (n)))
