@@ -40,7 +40,7 @@ str_length(Str str)
 }
 
 void
-str_extend(Str str, char *s)
+str_extend(Str str, const char *s)
 {
     int new_len;
 
