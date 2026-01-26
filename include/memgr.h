@@ -86,8 +86,11 @@ extern struct light_reserving_frame *_light_current_reserving_frame;
 static inline void
 print_memgr_count()
 {
-    printf(
-        "alloc: %d; reserved: %d\n", _light_alloc_count, _light_reserved_count
+    fprintf(
+        stderr,
+        "alloc: %d; reserved: %d\n",
+        _light_alloc_count,
+        _light_reserved_count
     );
 }
 #endif
