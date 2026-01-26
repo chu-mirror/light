@@ -84,11 +84,12 @@ extern struct light_reserving_frame *_light_current_reserving_frame;
 
 #ifndef NDEBUG
 static inline void
-print_memgr_count()
+print_memgr_count(const char *cond)
 {
     fprintf(
         stderr,
-        "alloc: %d; reserved: %d\n",
+        "condition: %s; alloc: %d; reserved: %d\n",
+        cond,
         _light_alloc_count,
         _light_reserved_count
     );
