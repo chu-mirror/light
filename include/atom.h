@@ -6,8 +6,5 @@
 
 void *atom(const uint8_t *v, size_t len);
 const char *atom_str(const char *str);
-void free_atom(const uint8_t *blk, size_t len);
-void free_atom_str(const char *str);
-void clear_atoms();
 
 #endif

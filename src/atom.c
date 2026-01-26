@@ -9,7 +9,7 @@
 #endif
 
 struct atom {
-    uint8_t *block;
+    const uint8_t *block;
     size_t len;
 };
 
@@ -38,65 +38,27 @@ void *
 atom(const uint8_t *blk, size_t len)
 {
     struct atom a;
-    uint8_t *_blk = NULL;
     void *p;
     if (atoms == NULL) {
-        new_hash_table(&atoms, hash_func_atom, equal_func_atom);
+        RESERVE(new_hash_table(&atoms, hash_func_atom, equal_func_atom));
     }
 
-    MOVE_ARRAY(blk, _blk, len);
-    a.block = _blk;
+    a.block = blk;
     a.len = len;
 
     p = get_from_hash_table(atoms, &a);
 
     if (p == NULL) {
+        uint8_t *_blk = NULL;
+        RESERVE(MOVE_ARRAY(blk, _blk, len));
+        a.block = _blk;
+
         struct atom *a_r = NULL;
-        MOVE(&a, a_r);
-        put_to_hash_table(atoms, a_r, a_r);
+        RESERVE(MOVE(&a, a_r); put_to_hash_table(atoms, a_r, a_r););
         return a_r;
     }
 
-    FREE(_blk);
     return p;
-}
-
-void
-free_atom(const uint8_t *blk, size_t len)
-{
-    struct atom *a_r, a;
-    uint8_t *_blk = NULL;
-
-    if (atoms == NULL) {
-        return;
-    }
-
-    MOVE_ARRAY(blk, _blk, len);
-    a.block = _blk;
-    a.len = len;
-
-    RENAME(remove_from_hash_table(atoms, &a), a_r);
-    if (a_r != NULL) {
-        FREE(a_r->block);
-        FREE(a_r);
-    }
-    FREE(_blk);
-}
-
-void
-clear_atoms()
-{
-    TableRecord *rcd_r;
-    List rcd_r_s;
-    rcd_r_s = get_all_records_from_hash_table(atoms);
-    FOREACH (rcd_r, rcd_r_s) {
-        struct atom *a_r;
-        RENAME(rcd_r->v, a_r);
-        FREE(a_r->block);
-        FREE(a_r);
-    }
-    free_hash_table(&atoms);
-    free_list(&rcd_r_s);
 }
 
 const char *
@@ -105,10 +67,4 @@ atom_str(const char *str)
     struct atom *a_r;
     RENAME(atom((const uint8_t *)str, strlen(str) + 1), a_r);
     return (const char *)(a_r->block);
-}
-
-void
-free_atom_str(const char *str)
-{
-    free_atom((const uint8_t *)str, strlen(str));
 }

@@ -7,6 +7,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
+#ifndef NDEBUG
+#include <stdio.h>
+#endif
+
 extern size_t _light_alloc_count;
 extern size_t _light_reserved_count;
 
@@ -77,5 +81,15 @@ extern struct light_reserving_frame *_light_current_reserving_frame;
 #define MOVE(src, dest) (NEW(dest), memcpy((dest), (src), sizeof *(dest)))
 #define MOVE_ARRAY(src, dest, n)                                   \
     (CALLOC(dest, n), memcpy((dest), (src), sizeof *(dest) * (n)))
+
+#ifndef NDEBUG
+static inline void
+print_memgr_count()
+{
+    printf(
+        "alloc: %d; reserved: %d\n", _light_alloc_count, _light_reserved_count
+    );
+}
+#endif
 
 #endif

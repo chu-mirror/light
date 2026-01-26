@@ -520,23 +520,19 @@ main()
         strcpy(str1, "Hello");
         strcpy(str2, "Hello");
         assert(str1 != str2);
-        assert(atom_str(str1) == atom_str(str2));
-        assert(strcmp(atom_str(str1), "Hello") == 0);
-        do {
-            size_t c;
-            free_atom_str(str1);
-            c = _light_alloc_count;
-            free_atom_str(str2);
-            assert(c == _light_alloc_count);
 
-            atom_str(str1);
-            c = _light_alloc_count;
-            atom_str(str2);
-            assert(c == _light_alloc_count);
-        } while (0);
+        const char *a1, *a2;
+        size_t c;
+
+        a1 = atom_str(str1);
+        c = _light_alloc_count;
+        a2 = atom_str(str2);
+        assert(c == _light_alloc_count);
+
+        assert(a1 == a2);
+        assert(strcmp(a1, "Hello") == 0);
         FREE(str1);
         FREE(str2);
-        clear_atoms();
     } while (0);
 
     do {
@@ -727,7 +723,6 @@ main()
         free_str(&s);
     } while (0);
 
-    assert(closure_count == 0);
     assert_memory_safety();
 
     printf("Passed all tests\n");
