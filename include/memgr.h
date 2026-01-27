@@ -94,6 +94,8 @@ print_memgr_count(const char *cond)
         _light_reserved_count
     );
 }
+#else
+#define print_memgr_count()
 #endif
 
 #endif
