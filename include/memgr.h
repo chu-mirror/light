@@ -95,7 +95,7 @@ print_memgr_count(const char *cond)
     );
 }
 #else
-#define print_memgr_count()
+#define print_memgr_count(...)
 #endif
 
 #endif
