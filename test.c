@@ -255,31 +255,26 @@ main()
 
     do {
         int *a = NULL, *b = NULL;
+
         KEEP(RESERVE(NEW(a)));
-        free(a);
-        a = NULL;
-        _light_alloc_count = _light_reserved_count = 0;
+        KEEP(RESERVE(FREE(a)));
+        assert_memory_safety();
+        assert(_light_alloc_count == 0);
+
         RESERVE(NEW(a); KEEP(RESERVE(NEW(b))));
-        free(a);
-        free(b);
-        a = b = NULL;
-        _light_alloc_count = _light_reserved_count = 0;
+        RESERVE(FREE(a); FREE(b););
+
         KEEP(RESERVE(RESERVE(NEW(a); RESERVE(NEW(b)))));
-        free(a);
-        free(b);
-        a = b = NULL;
-        _light_alloc_count = _light_reserved_count = 0;
+        RESERVE(FREE(a); FREE(b););
+
         KEEP(RESERVE(NEW(a); RESERVE(NEW(b))));
-        free(a);
-        free(b);
-        a = b = NULL;
-        _light_alloc_count = _light_reserved_count = 0;
+        RESERVE(FREE(a); FREE(b););
+
         KEEP(RESERVE(RESERVE(NEW(a)); RESERVE(NEW(b))));
-        free(a);
-        free(b);
-        a = b = NULL;
-        _light_alloc_count = _light_reserved_count = 0;
+        RESERVE(FREE(a); FREE(b););
+
         KEEP(RESERVE(encapsulated_reserve()));
+        assert_memory_safety();
         _light_alloc_count = _light_reserved_count = 0;
     } while (0);
 
