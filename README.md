@@ -13,3 +13,6 @@ Current support:
 - deque;
 - resizable string;
 - state machine(a subset of [Harel 1987]).
+
+Following development is moved to [litar](www.github.com/chu-mirror/litar)
+as its standard library.
